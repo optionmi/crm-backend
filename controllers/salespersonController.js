@@ -32,7 +32,6 @@ exports.updateSalesperson = (req, res) => {
   const updatedSalesperson = {
     name: req.body.name,
     email: req.body.email,
-    // Add more fields as needed
   };
 
   Salesperson.updateById(salespersonId, updatedSalesperson, (err, data) => {

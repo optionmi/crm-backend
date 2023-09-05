@@ -9,8 +9,8 @@ exports.createBook = (req, res) => {
   const newBook = new Book({
     title: req.body.title,
     author: req.body.author,
-    publisher_id: req.body.publisher_id, // Assuming you have a publisher ID
-    // Add more fields as needed
+    publisher_id: req.body.publisher_id,
+
   });
 
   Book.create(newBook, (err, data) => {
@@ -35,7 +35,6 @@ exports.updateBook = (req, res) => {
     title: req.body.title,
     author: req.body.author,
     publisher_id: req.body.publisher_id,
-    // Add more fields as needed
   };
 
   Book.updateById(bookId, updatedBook, (err, data) => {
