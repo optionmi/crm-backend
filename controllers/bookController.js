@@ -9,7 +9,7 @@ exports.createBook = (req, res) => {
   const newBook = new Book({
     title: req.body.title,
     author: req.body.author,
-    publisher_id: req.body.publisher_id,
+    publication_year: req.body.publication_year,
 
   });
 
@@ -34,7 +34,7 @@ exports.updateBook = (req, res) => {
   const updatedBook = {
     title: req.body.title,
     author: req.body.author,
-    publisher_id: req.body.publisher_id,
+    publication_year: req.body.publication_year,
   };
 
   Book.updateById(bookId, updatedBook, (err, data) => {

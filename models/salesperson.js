@@ -8,21 +8,31 @@ class Salesperson {
   }
 
   static create(newSalesperson, result) {
-    db.query('INSERT INTO salespersons SET ?', newSalesperson, (err, res) => {
-      if (err) {
-        console.error('Error creating salesperson: ', err);
-        result(err, null);
-        return;
+    db.query(
+      'INSERT INTO salespersons (name, address, phone_number) VALUES (?, ?, ?)',
+      [newSalesperson.name, newSalesperson.address, newSalesperson.phone_number],
+      (err, res) => {
+        if (err) {
+          console.error('Error creating salesperson: ', err);
+          result(err, null);
+          return;
+        }
+        console.log('Created salesperson: ', { id: res.insertId, ...newSalesperson });
+        result(null, { id: res.insertId, ...newSalesperson });
       }
-      console.log('Created salesperson: ', { id: res.insertId, ...newSalesperson });
-      result(null, { id: res.insertId, ...newSalesperson });
-    });
+    );
   }
+
 
   static updateById(salespersonId, updatedSalesperson, result) {
     db.query(
-      'UPDATE salespersons SET name = ?, email = ? WHERE id = ?',
-      [updatedSalesperson.name, updatedSalesperson.phone_number, updatedSalesperson.address,  salespersonId],
+      'UPDATE salespersons SET name = ?, phone_number = ?, address = ? WHERE id = ?',
+      [
+        updatedSalesperson.name,
+        updatedSalesperson.phone_number,
+        updatedSalesperson.address,
+        salespersonId,
+      ],
       (err, res) => {
         if (err) {
           console.error('Error updating salesperson: ', err);

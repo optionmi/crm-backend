@@ -8,7 +8,8 @@ exports.createSalesperson = (req, res) => {
 
   const newSalesperson = new Salesperson({
     name: req.body.name,
-    email: req.body.email,
+    address: req.body.address,
+    phone_number: req.body.phone_number
   });
 
   Salesperson.create(newSalesperson, (err, data) => {
@@ -31,7 +32,8 @@ exports.updateSalesperson = (req, res) => {
   const salespersonId = req.params.id;
   const updatedSalesperson = {
     name: req.body.name,
-    email: req.body.email,
+    address: req.body.address,
+    phone_number: req.body.phone_number
   };
 
   Salesperson.updateById(salespersonId, updatedSalesperson, (err, data) => {
