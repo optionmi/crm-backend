@@ -3,7 +3,6 @@ const db = require('../config/db');
 class Salesperson {
   constructor(salesperson) {
     this.name = salesperson.name;
-    this.email = salesperson.email;
     this.phone_number = salesperson.phone_number;
     this.address = salesperson.address
   }
@@ -23,7 +22,7 @@ class Salesperson {
   static updateById(salespersonId, updatedSalesperson, result) {
     db.query(
       'UPDATE salespersons SET name = ?, email = ? WHERE id = ?',
-      [updatedSalesperson.name, updatedSalesperson.email, salesperson.phone_number, salesperson.address,  salespersonId],
+      [updatedSalesperson.name, updatedSalesperson.phone_number, updatedSalesperson.address,  salespersonId],
       (err, res) => {
         if (err) {
           console.error('Error updating salesperson: ', err);

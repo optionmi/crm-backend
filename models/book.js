@@ -4,7 +4,7 @@ class Book {
   constructor(book) {
     this.title = book.title;
     this.author = book.author;
-    this.publisher_id = book.publisher_id;
+    this.publication_year = book.publication_year;
   }
 
   static create(newBook, result) {
@@ -34,7 +34,7 @@ class Book {
   static updateById(bookId, updatedBook, result) {
     db.query(
       'UPDATE books SET title = ?, author = ?, publisher_id = ? WHERE id = ?',
-      [updatedBook.title, updatedBook.author, updatedBook.publisher_id, bookId],
+      [updatedBook.title, updatedBook.author, updatedBook.publication_year, bookId],
       (err, res) => {
         if (err) {
           console.error('Error updating book: ', err);

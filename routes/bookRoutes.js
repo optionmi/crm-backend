@@ -8,9 +8,6 @@ router.post('/books/create', bookController.createBook);
 // Get all books
 router.get('/books', bookController.getAllBooks);
 
-// Get a specific book by ID
-router.get('/books/:id', bookController.viewBook);
-
 // Update a specific book by ID
 router.put('/books/:id', bookController.updateBook);
 
