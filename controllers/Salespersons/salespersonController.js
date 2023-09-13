@@ -113,33 +113,5 @@ const getAllSalespersons = async (req, res) => {
   }
 };
 
-// Function to update a salesperson (accessible to admin only)
-const updateSalesperson = async (req, res) => {
-  const { id } = req.params;
-  const updatedData = req.body; // The updated salesperson data
 
-  try {
-    // Check if the user is an admin
-    if (req.user.user_type !== 'admin') {
-      return res.status(403).json({ message: 'Permission denied' });
-    }
-
-    // Find the salesperson by ID and update it
-    const [updatedRows] = await Salesperson.update(updatedData, {
-      where: { id },
-    });
-
-    if (updatedRows > 0) {
-      // The update was successful
-      return res.status(200).json({ message: 'Salesperson data updated successfully' });
-    } else {
-      return res.status(404).json({ message: 'Salesperson not found' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Server Error');
-  }
-};
-
-
-module.exports = { createSalesperson, getSalespersonById, getAllSalespersons, updateSalesperson };
+module.exports = { createSalesperson, getSalespersonById, getAllSalespersons};

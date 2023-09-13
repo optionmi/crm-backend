@@ -81,34 +81,6 @@ const getPublisherData = async (req, res) => {
   }
 };
 
-// Function to update publisher data (accessible to admin only)
-const updatePublisherData = async (req, res) => {
-  try {
-    // Check if the user is an admin
-    if (req.user.user_type !== 'admin') {
-      return res.status(403).json({ message: 'Permission denied' });
-    }
-
-    const publisherId = req.params.publisherId; // Get publisherId from request params
-    const updatedData = req.body; // The updated publisher data
-
-    // Find the publisher by ID and update it
-    const [updatedRows] = await Publisher.update(updatedData, {
-      where: { id: publisherId },
-    });
-
-    if (updatedRows > 0) {
-      // The update was successful
-      return res.status(200).json({ message: 'Publisher data updated successfully' });
-    } else {
-      return res.status(404).json({ message: 'Publisher not found' });
-    }
-  } catch (error) {
-    // Handle errors appropriately
-    console.error(error);
-    res.status(500).send('Server Error');
-  }
-};
 
 // Function to fetch all publishers (accessible to admin only)
 const getAllPublishers = async (req, res) => {
@@ -132,4 +104,4 @@ const getAllPublishers = async (req, res) => {
   }
 };
 
-module.exports = { createPublisher, getPublisherData, updatePublisherData, getAllPublishers };
+module.exports = { createPublisher, getPublisherData, getAllPublishers };
