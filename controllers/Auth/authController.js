@@ -17,8 +17,10 @@ router.post("/login", async (req, res) => {
 
     try {
         // Find the user by email
-        // const user = await User.findOne({ where: { email } });
-        const user = await prisma.users.findUnique({ where: { email } });
+        const user = await prisma.users.findUnique({
+            where: { email },
+            include: { admin: true, publishers: true, salespeople: true },
+        });
 
         if (!user) {
             return res.status(400).json({ message: "Invalid credentials" });
@@ -43,14 +45,6 @@ router.post("/login", async (req, res) => {
                 // Check if the user_type is "Salesperson"
                 if (user.user_type === "salesperson") {
                     // Fetch the salesperson's team and include it in the response
-                    // Salespersons.findOne({ where: { user_id: user.id } }).then((salesperson) => {
-                    //   if (salesperson) {
-                    //     res.json({ token, user_type: user.user_type, team: salesperson.team });
-                    //   } else {
-                    //     res.status(401).send('Access Denied');
-                    //   }
-                    // });
-
                     prisma.salespeople
                         .findUnique({
                             where: {
@@ -60,7 +54,14 @@ router.post("/login", async (req, res) => {
                         .then((salesperson) => {
                             if (salesperson) {
                                 res.json({
+                                    message: "Logged in successfully",
                                     token,
+                                    name:
+                                        user.admin?.name ||
+                                        user.publishers?.name ||
+                                        user.salespeople?.name ||
+                                        "Unknown",
+                                    email: user.email,
                                     user_type: user.user_type,
                                     team: salesperson.team,
                                 });
@@ -75,7 +76,17 @@ router.post("/login", async (req, res) => {
                         });
                 } else {
                     // For other user types, send the token and user_type only
-                    res.json({ token, user_type: user.user_type });
+                    res.json({
+                        message: "Logged in successfully",
+                        token,
+                        name:
+                            user.admin?.name ||
+                            user.publishers?.name ||
+                            user.salespeople?.name ||
+                            "Unknown",
+                        email: user.email,
+                        user_type: user.user_type,
+                    });
                 }
             }
         );
