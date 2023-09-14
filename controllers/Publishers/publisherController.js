@@ -1,5 +1,3 @@
-const Sequelize = require("sequelize");
-const Op = Sequelize.Op;
 const bcrypt = require("bcrypt");
 // const User = require('../../models/Auth/user');
 // const Publisher = require('../../models/Publishers/publisher');
