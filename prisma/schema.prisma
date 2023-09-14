@@ -1,0 +1,359 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model admin {
+  id        Int       @id @default(autoincrement())
+  user_id   Int       @unique(map: "user_id")
+  name      String    @db.VarChar(255)
+  email     String    @unique(map: "email") @db.VarChar(255)
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @default(now()) @db.Timestamp(0)
+  users     users     @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "admin_ibfk_1")
+}
+
+model attendance {
+  id             Int          @id @default(autoincrement())
+  salesperson_id Int?
+  date           DateTime?    @db.Date
+  is_present     Boolean?
+  notes          String?      @db.Text
+  createdAt      DateTime?    @default(now()) @db.Timestamp(0)
+  updatedAt      DateTime?    @default(now()) @db.Timestamp(0)
+  salespeople    salespeople? @relation(fields: [salesperson_id], references: [id], onDelete: Cascade, map: "attendance_ibfk_1")
+
+  @@index([salesperson_id], map: "salesperson_id")
+}
+
+model collections {
+  id              Int          @id @default(autoincrement())
+  salesperson_id  Int?
+  collection_date DateTime?    @db.Date
+  amount          Decimal?     @db.Decimal(10, 2)
+  notes           String?      @db.Text
+  createdAt       DateTime?    @default(now()) @db.Timestamp(0)
+  updatedAt       DateTime?    @default(now()) @db.Timestamp(0)
+  salespeople     salespeople? @relation(fields: [salesperson_id], references: [id], onDelete: Cascade, map: "collections_ibfk_1")
+
+  @@index([salesperson_id], map: "salesperson_id")
+}
+
+model dailyplanning {
+  id             Int                          @id @default(autoincrement())
+  salesperson_id Int?
+  visit_date     DateTime?                    @db.Date
+  visit_location dailyplanning_visit_location
+  notes          String?                      @db.Text
+  createdAt      DateTime?                    @default(now()) @db.Timestamp(0)
+  updatedAt      DateTime?                    @default(now()) @db.Timestamp(0)
+  salespeople    salespeople?                 @relation(fields: [salesperson_id], references: [id], onDelete: Cascade, map: "dailyplanning_ibfk_1")
+
+  @@index([salesperson_id], map: "salesperson_id")
+}
+
+model invoices {
+  id             Int          @id @default(autoincrement())
+  salesperson_id Int?
+  invoice_date   DateTime?    @db.Date
+  amount         Decimal?     @db.Decimal(10, 2)
+  notes          String?      @db.Text
+  createdAt      DateTime?    @default(now()) @db.Timestamp(0)
+  updatedAt      DateTime?    @default(now()) @db.Timestamp(0)
+  salespeople    salespeople? @relation(fields: [salesperson_id], references: [id], onDelete: Cascade, map: "invoices_ibfk_1")
+
+  @@index([salesperson_id], map: "salesperson_id")
+}
+
+model negotiation {
+  id             Int                 @id @default(autoincrement())
+  salesperson_id Int?
+  result         negotiation_result?
+  notes          String?             @db.Text
+  createdAt      DateTime?           @default(now()) @db.Timestamp(0)
+  updatedAt      DateTime?           @default(now()) @db.Timestamp(0)
+  salespeople    salespeople?        @relation(fields: [salesperson_id], references: [id], onDelete: Cascade, map: "negotiation_ibfk_1")
+
+  @@index([salesperson_id], map: "salesperson_id")
+}
+
+model orderpunching {
+  id             Int          @id @default(autoincrement())
+  salesperson_id Int?
+  book_id        Int?
+  order_date     DateTime?    @db.Date
+  quantity       Int?
+  notes          String?      @db.Text
+  createdAt      DateTime?    @default(now()) @db.Timestamp(0)
+  updatedAt      DateTime?    @default(now()) @db.Timestamp(0)
+  salespeople    salespeople? @relation(fields: [salesperson_id], references: [id], onDelete: Cascade, map: "orderpunching_ibfk_1")
+  books          books?       @relation(fields: [book_id], references: [id], onDelete: Cascade, map: "orderpunching_ibfk_2")
+
+  @@index([book_id], map: "book_id")
+  @@index([salesperson_id], map: "salesperson_id")
+}
+
+model pendingpayments {
+  id             Int          @id @default(autoincrement())
+  salesperson_id Int?
+  due_date       DateTime?    @db.Date
+  amount         Decimal?     @db.Decimal(10, 2)
+  notes          String?      @db.Text
+  createdAt      DateTime?    @default(now()) @db.Timestamp(0)
+  updatedAt      DateTime?    @default(now()) @db.Timestamp(0)
+  salespeople    salespeople? @relation(fields: [salesperson_id], references: [id], onDelete: Cascade, map: "pendingpayments_ibfk_1")
+
+  @@index([salesperson_id], map: "salesperson_id")
+}
+
+model productgifting {
+  id             Int          @id @default(autoincrement())
+  salesperson_id Int?
+  book_id        Int?
+  quantity       Int?
+  gift_date      DateTime?    @db.Date
+  notes          String?      @db.Text
+  createdAt      DateTime?    @default(now()) @db.Timestamp(0)
+  updatedAt      DateTime?    @default(now()) @db.Timestamp(0)
+  salespeople    salespeople? @relation(fields: [salesperson_id], references: [id], onDelete: Cascade, map: "productgifting_ibfk_1")
+  books          books?       @relation(fields: [book_id], references: [id], onDelete: Cascade, map: "productgifting_ibfk_2")
+
+  @@index([book_id], map: "book_id")
+  @@index([salesperson_id], map: "salesperson_id")
+}
+
+model publishers {
+  id             Int           @id @default(autoincrement())
+  user_id        Int           @unique(map: "user_id")
+  company_name   String        @db.VarChar(255)
+  email          String        @unique(map: "email") @db.VarChar(255)
+  address        String        @db.VarChar(255)
+  contact_person String        @db.VarChar(255)
+  phone_number   Int
+  country        String        @db.VarChar(255)
+  state          String        @db.VarChar(255)
+  city           String        @db.VarChar(255)
+  postal_code    Int
+  createdAt      DateTime?     @default(now()) @db.Timestamp(0)
+  updatedAt      DateTime?     @default(now()) @db.Timestamp(0)
+  books          books[]
+  users          users         @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "publishers_ibfk_1")
+  salespeople    salespeople[]
+}
+
+model salespeople {
+  id                 Int                  @id @default(autoincrement())
+  user_id            Int                  @unique(map: "user_id")
+  publisher_id       Int?
+  name               String               @db.VarChar(255)
+  email              String               @db.VarChar(255)
+  phone_number       Int
+  team               salespeople_team
+  createdAt          DateTime?            @default(now()) @db.Timestamp(0)
+  updatedAt          DateTime?            @default(now()) @db.Timestamp(0)
+  attendance         attendance[]
+  collections        collections[]
+  dailyplanning      dailyplanning[]
+  invoices           invoices[]
+  negotiation        negotiation[]
+  orderpunching      orderpunching[]
+  pendingpayments    pendingpayments[]
+  productgifting     productgifting[]
+  users              users                @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "salespeople_ibfk_1")
+  publishers         publishers?          @relation(fields: [publisher_id], references: [id], map: "salespeople_ibfk_2")
+  specimensampling   specimensampling[]
+  travellingclaims   travellingclaims[]
+  travellingexpenses travellingexpenses[]
+
+  @@index([publisher_id], map: "publisher_id")
+}
+
+model specimensampling {
+  id             Int          @id @default(autoincrement())
+  salesperson_id Int?
+  book_id        Int?
+  quantity       Int?
+  sample_date    DateTime?    @db.Date
+  notes          String?      @db.Text
+  createdAt      DateTime?    @default(now()) @db.Timestamp(0)
+  updatedAt      DateTime?    @default(now()) @db.Timestamp(0)
+  salespeople    salespeople? @relation(fields: [salesperson_id], references: [id], onDelete: Cascade, map: "specimensampling_ibfk_1")
+  books          books?       @relation(fields: [book_id], references: [id], onDelete: Cascade, map: "specimensampling_ibfk_2")
+
+  @@index([book_id], map: "book_id")
+  @@index([salesperson_id], map: "salesperson_id")
+}
+
+model travellingclaims {
+  id                Int          @id @default(autoincrement())
+  salesperson_id    Int?
+  claim_date        DateTime?    @db.Date
+  claim_description String?      @db.VarChar(255)
+  amount            Decimal?     @db.Decimal(10, 2)
+  notes             String?      @db.Text
+  createdAt         DateTime?    @default(now()) @db.Timestamp(0)
+  updatedAt         DateTime?    @default(now()) @db.Timestamp(0)
+  salespeople       salespeople? @relation(fields: [salesperson_id], references: [id], onDelete: Cascade, map: "travellingclaims_ibfk_1")
+
+  @@index([salesperson_id], map: "salesperson_id")
+}
+
+model travellingexpenses {
+  id                  Int          @id @default(autoincrement())
+  salesperson_id      Int?
+  expense_date        DateTime?    @db.Date
+  expense_description String?      @db.VarChar(255)
+  amount              Decimal?     @db.Decimal(10, 2)
+  notes               String?      @db.Text
+  created_at          DateTime?    @default(now()) @db.Timestamp(0)
+  salespeople         salespeople? @relation(fields: [salesperson_id], references: [id], onDelete: Cascade, map: "travellingexpenses_ibfk_1")
+
+  @@index([salesperson_id], map: "salesperson_id")
+}
+
+model users {
+  id          Int             @id @default(autoincrement())
+  email       String          @unique(map: "email") @db.VarChar(255)
+  password    String          @db.VarChar(255)
+  user_type   users_user_type
+  createdAt   DateTime?       @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime?       @default(now()) @db.Timestamp(0)
+  admin       admin?
+  publishers  publishers?
+  salespeople salespeople?
+}
+
+model boards {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(255)
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @default(now()) @db.Timestamp(0)
+  books     books[]
+}
+
+model subjects {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(255)
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @default(now()) @db.Timestamp(0)
+  series    series[]
+  books     books[]
+}
+
+model series {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(255)
+  subject_id Int
+  createdAt  DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt  DateTime? @default(now()) @db.Timestamp(0)
+  subject    subjects  @relation(fields: [subject_id], references: [id], onDelete: Cascade, map: "subjects_ibfk_1")
+  books      books[]
+}
+
+model books {
+  id           Int       @id @default(autoincrement())
+  title        String    @db.VarChar(255)
+  author       String?   @db.VarChar(255)
+  board_id     Int
+  publisher_id Int?
+  subject_id   Int
+  series_id    Int
+  standard     String    @db.VarChar(50)
+  price        Decimal   @db.Decimal(10, 2)
+  createdAt    DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt    DateTime? @default(now()) @db.Timestamp(0)
+
+  publishers       publishers?        @relation(fields: [publisher_id], references: [id], onDelete: Cascade, map: "books_ibfk_1")
+  orderpunching    orderpunching[]
+  productgifting   productgifting[]
+  specimensampling specimensampling[]
+
+  board   boards   @relation(fields: [board_id], references: [id])
+  subject subjects @relation(fields: [subject_id], references: [id])
+  series  series   @relation(fields: [series_id], references: [id])
+
+  @@index([publisher_id], map: "publisher_id")
+}
+
+model leads {
+  id                Int       @id @default(autoincrement())
+  clientName        String
+  requirement       String?
+  leadBudget        Float?
+  sourceOfLead      String // You can create an enum for this if there are predefined values
+  typeOfLead        String // You can create an enum for this if there are predefined values
+  salesOwner        String
+  expectedCloseDate DateTime?
+
+  // Relationships
+  // contactPersons ContactPerson[]
+  // products       Product[]
+}
+
+// model contacts {
+//   id             Int             @id @default(autoincrement())
+//   name           String
+//   email          String[]
+//   contactNumbers ContactNumber[]
+//   organization   String?
+
+//   // Relationships
+//   lead   leads @relation(fields: [leadId], references: [id])
+//   leadId Int
+// }
+
+// model organizations {
+//   id     Int    @id @default(autoincrement())
+//   number String
+//   type   String // You can create an enum for this if there are predefined values
+
+//   // Relationships
+//   contactPerson   ContactPerson @relation(fields: [contactPersonId], references: [id])
+//   contactPersonId Int
+// }
+
+// model Product {
+//   id       Int    @id @default(autoincrement())
+//   itemName String
+//   price    Float?
+//   quantity Int?
+
+//   // Relationships
+//   lead   Lead @relation(fields: [leadId], references: [id])
+//   leadId Int
+// }
+
+// Enums
+enum negotiation_result {
+  won
+  lost
+}
+
+enum dailyplanning_visit_location {
+  Schools
+  Teacher_Residence @map("Teacher Residence")
+  Bookshop_Dealers  @map("Bookshop/Dealers")
+  Coaching_Centers  @map("Coaching Centers")
+  Transporters
+  Banks
+  Others
+}
+
+enum users_user_type {
+  admin
+  salesperson
+  publisher
+}
+
+enum salespeople_team {
+  SalesTeam
+  SalesCoordinationTeam
+  OperationsTeam
+  ProductandTrainingTeam
+  DispatchandWarehouseTeam
+  FinanceTeam
+}
