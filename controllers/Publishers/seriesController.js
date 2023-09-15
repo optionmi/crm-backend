@@ -1,12 +1,8 @@
-// const Books = require("../../models/Publishers/books");
-// const Publishers = require("../../models/Publishers/publisher");
 const { PrismaClient } = require("@prisma/client");
-
-// Create an instance of the Prisma Client
 const prisma = new PrismaClient();
 
-// Function to create a new book (accessible to publishers)
-const createBook = async (req, res) => {
+// Function to create a new Series (accessible to publishers)
+const createSeries = async (req, res) => {
     const { title, author, board, standard, subject, price } = req.body;
     const { user } = req;
 
@@ -36,8 +32,8 @@ const createBook = async (req, res) => {
             publisherId = null; // Set to null or a default value as needed
         }
 
-        // Create the book
-        // const book = await Books.create({
+        // Create the Series
+        // const Series = await Series.create({
         //     title,
         //     author,
         //     board,
@@ -46,7 +42,7 @@ const createBook = async (req, res) => {
         //     price,
         //     publisher_id: publisherId,
         // });
-        const book = await prisma.books.create({
+        const Series = await prisma.Series.create({
             data: {
                 title,
                 author,
@@ -58,23 +54,23 @@ const createBook = async (req, res) => {
             },
         });
 
-        res.status(201).json(book);
+        res.status(201).json(Series);
     } catch (error) {
         console.error(error);
         res.status(500).send("Server Error");
     }
 };
 
-// Function to fetch all books (accessible to all users)
-const getAllBooks = async (req, res) => {
+// Function to fetch all Series (accessible to all users)
+const getAllSeries = async (req, res) => {
     try {
-        // const books = await Books.findAll();
-        const books = await prisma.books.findMany();
+        // const Series = await Series.findAll();
+        const Series = await prisma.Series.findMany();
 
-        if (books.length > 0) {
-            return res.status(200).json(books);
+        if (Series.length > 0) {
+            return res.status(200).json(Series);
         } else {
-            return res.status(404).json({ message: "No books found" });
+            return res.status(404).json({ message: "No Series found" });
         }
     } catch (error) {
         console.error(error);
@@ -82,8 +78,8 @@ const getAllBooks = async (req, res) => {
     }
 };
 
-// Function to fetch a book by ID (accessible to all users)
-const getBookById = async (req, res) => {
+// Function to fetch a Series by ID (accessible to all users)
+const getSeriesById = async (req, res) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
         res.status(400).send({ message: "Invalid ID" });
@@ -91,13 +87,13 @@ const getBookById = async (req, res) => {
     }
 
     try {
-        // const book = await Books.findByPk(id);
-        const book = await prisma.books.findUnique({ where: { id } });
+        // const Series = await Series.findByPk(id);
+        const Series = await prisma.Series.findUnique({ where: { id } });
 
-        if (book) {
-            return res.status(200).json(book);
+        if (Series) {
+            return res.status(200).json(Series);
         } else {
-            return res.status(404).json({ message: "Book not found" });
+            return res.status(404).json({ message: "Series not found" });
         }
     } catch (error) {
         console.error(error);
@@ -105,8 +101,8 @@ const getBookById = async (req, res) => {
     }
 };
 
-// Function to update a book (accessible to publishers)
-const updateBook = async (req, res) => {
+// Function to update a Series (accessible to publishers)
+const updateSeries = async (req, res) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
         res.status(400).send({ message: "Invalid ID" });
@@ -124,29 +120,29 @@ const updateBook = async (req, res) => {
             return res.status(403).json({ message: "Permission denied" });
         }
 
-        // Find the book by ID and update it
-        // const [updatedRows] = await Books.update(updatedData, {
+        // Find the Series by ID and update it
+        // const [updatedRows] = await Series.update(updatedData, {
         //     where: { id },
         // });
-        const updatedRow = await prisma.books.update({
+        const updatedRow = await prisma.Series.update({
             where: { id },
             data: { ...updatedData },
         });
 
         if (updatedRow) {
             return res.status(200).json({
-                message: "Book data updated successfully",
+                message: "Series data updated successfully",
                 data: updatedRow,
             });
         } else {
-            return res.status(404).json({ message: "Book not found" });
+            return res.status(404).json({ message: "Series not found" });
         }
     } catch (error) {
         console.error(error);
         res.status(500).send("Server Error");
     }
 };
-const deleteBook = async (req, res) => {
+const deleteSeries = async (req, res) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
         res.status(400).send({ message: "Invalid ID" });
@@ -154,47 +150,23 @@ const deleteBook = async (req, res) => {
     }
 
     try {
-        const deletedBook = await prisma.books.delete({
+        const deletedSeries = await prisma.Series.delete({
             where: { id },
         });
         res.status(200).json({
-            message: "Book Deleted Successfully!",
-            data: deletedBook,
+            message: "Series Deleted Successfully!",
+            data: deletedSeries,
         });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Failed to delete book");
-    }
-};
-
-const searchBooksByName = async (req, res) => {
-    try {
-        const { title } = req.query;
-
-        const books = await prisma.books.findMany({
-            where: {
-                title: {
-                    contains: title,
-                },
-            },
-        });
-
-        if (books.length === 0) {
-            return res.status(404).json({ message: "No Books found" });
-        }
-
-        return res.status(200).json(books);
-    } catch (error) {
-        console.error(error);
-        res.sendStatus(500);
+        res.status(500).send("Failed to delete Series");
     }
 };
 
 module.exports = {
-    createBook,
-    getAllBooks,
-    getBookById,
-    updateBook,
-    deleteBook,
-    searchBooksByName,
+    createSeries,
+    getAllSeries,
+    getSeriesById,
+    updateSeries,
+    deleteSeries,
 };

@@ -15,13 +15,13 @@ Follow the instructions below to set up and run the CRM backend application.
 1. Clone the repository to your local machine using Git:
 
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/optionmi/crm-backend.git
     ```
 
 2. Navigate to the project directory:
 
     ```bash
-    cd crm-backend-app
+    cd crm-backend
     ```
 
 3. Install the required Node modules using either npm or yarn. Choose one of the following commands:
@@ -74,15 +74,3 @@ Follow the instructions below to set up and run the CRM backend application.
     ```
 
     The server should now be running at `http://localhost:8000`.
-
-## Usage
-
-You can now use this CRM backend API to build and manage your CRM application. Refer to the API documentation or the frontend application documentation (if applicable) for details on how to interact with this backend.
-
-## Contributing
-
-If you would like to contribute to this project, please follow our [contribution guidelines](CONTRIBUTING.md).
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
