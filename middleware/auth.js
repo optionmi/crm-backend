@@ -4,7 +4,7 @@ require("dotenv").config();
 function authenticateUser(req, res, next) {
     // Get the token from the request header
     // const token = req.header('Authorization');
-    const token = req.headers.authorization.split(" ")[1];
+    const token = req.headers.authorization?.split(" ")[1];
 
     if (!token) {
         return res
