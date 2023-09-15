@@ -3,8 +3,7 @@ require("dotenv").config();
 
 function authenticateUser(allowedUserTypes = []) {
     return function (req, res, next) {
-        // const token = req.headers.authorization?.split(" ")[1]; // Causing Issues in React
-        const token = req.header("Authorization");
+        const token = req.headers.authorization?.split(" ")[1];
 
         if (!token) {
             return res
