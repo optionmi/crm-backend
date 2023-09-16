@@ -168,6 +168,7 @@ model salespeople {
   specimensampling   specimensampling[]
   travellingclaims   travellingclaims[]
   travellingexpenses travellingexpenses[]
+  leads              leads[]
 
   @@index([publisher_id], map: "publisher_id")
 }
@@ -272,60 +273,98 @@ model books {
   productgifting   productgifting[]
   specimensampling specimensampling[]
 
-  board   boards   @relation(fields: [board_id], references: [id])
-  subject subjects @relation(fields: [subject_id], references: [id])
-  series  series   @relation(fields: [series_id], references: [id])
+  board          boards           @relation(fields: [board_id], references: [id])
+  subject        subjects         @relation(fields: [subject_id], references: [id])
+  series         series           @relation(fields: [series_id], references: [id])
+  leads_products leads_products[]
 
   @@index([publisher_id], map: "publisher_id")
 }
 
 model leads {
-  id                Int       @id @default(autoincrement())
-  clientName        String
-  requirement       String?
-  leadBudget        Float?
-  sourceOfLead      String // You can create an enum for this if there are predefined values
-  typeOfLead        String // You can create an enum for this if there are predefined values
-  salesOwner        String
-  expectedCloseDate DateTime?
+  id                      Int        @id @default(autoincrement())
+  client_name             String
+  requirement             String?
+  budget                  Float?
+  source                  LeadSource
+  type                    LeadType
+  expected_close_date     DateTime?
+  stage                   LeadStage
+  salesperson_id          Int
+  leads_contact_person_id Int?
+  leads_products_id       Int?
+  createdAt               DateTime?  @default(now()) @db.Timestamp(0)
+  updatedAt               DateTime?  @default(now()) @db.Timestamp(0)
 
-  // Relationships
-  // contactPersons ContactPerson[]
-  // products       Product[]
+  salesperson          salespeople           @relation(fields: [salesperson_id], references: [id])
+  leads_contact_person leads_contact_person? @relation(fields: [leads_contact_person_id], references: [id])
+  leads_products       leads_products?       @relation(fields: [leads_products_id], references: [id])
 }
 
-// model contacts {
-//   id             Int             @id @default(autoincrement())
-//   name           String
-//   email          String[]
-//   contactNumbers ContactNumber[]
-//   organization   String?
+model leads_contact_person {
+  id              Int           @id @default(autoincrement())
+  contact_id      Int
+  organization_id Int
+  contact         contacts      @relation(fields: [contact_id], references: [id])
+  organization    organizations @relation(fields: [organization_id], references: [id])
+  createdAt       DateTime?     @default(now()) @db.Timestamp(0)
+  updatedAt       DateTime?     @default(now()) @db.Timestamp(0)
 
-//   // Relationships
-//   lead   leads @relation(fields: [leadId], references: [id])
-//   leadId Int
-// }
+  lead leads[]
+}
 
-// model organizations {
-//   id     Int    @id @default(autoincrement())
-//   number String
-//   type   String // You can create an enum for this if there are predefined values
+model leads_products {
+  id        Int       @id @default(autoincrement())
+  book_id   Int
+  price     Float
+  quantity  Int
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @default(now()) @db.Timestamp(0)
+  book      books     @relation(fields: [book_id], references: [id])
 
-//   // Relationships
-//   contactPerson   ContactPerson @relation(fields: [contactPersonId], references: [id])
-//   contactPersonId Int
-// }
+  lead leads[]
+}
 
-// model Product {
-//   id       Int    @id @default(autoincrement())
-//   itemName String
-//   price    Float?
-//   quantity Int?
+model contacts {
+  id                   Int                    @id @default(autoincrement())
+  name                 String
+  emails               emails[]
+  contact_numbers      contact_numbers[]
+  leads_contact_person leads_contact_person[]
+  organization         organizations?         @relation(fields: [organization_id], references: [id])
+  organization_id      Int?
+  createdAt            DateTime?              @default(now()) @db.Timestamp(0)
+  updatedAt            DateTime?              @default(now()) @db.Timestamp(0)
+}
 
-//   // Relationships
-//   lead   Lead @relation(fields: [leadId], references: [id])
-//   leadId Int
-// }
+model emails {
+  id         Int       @id @default(autoincrement())
+  contact_id Int
+  email      String
+  label      Labels    @default(WORK)
+  contact    contacts  @relation(fields: [contact_id], references: [id])
+  createdAt  DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt  DateTime? @default(now()) @db.Timestamp(0)
+}
+
+model contact_numbers {
+  id         Int       @id @default(autoincrement())
+  contact_id Int
+  number     String
+  label      Labels    @default(WORK)
+  contact    contacts  @relation(fields: [contact_id], references: [id])
+  createdAt  DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt  DateTime? @default(now()) @db.Timestamp(0)
+}
+
+model organizations {
+  id                   Int                    @id @default(autoincrement())
+  name                 String
+  createdAt            DateTime?              @default(now()) @db.Timestamp(0)
+  updatedAt            DateTime?              @default(now()) @db.Timestamp(0)
+  leads_contact_person leads_contact_person[]
+  contacts             contacts[]
+}
 
 // Enums
 enum negotiation_result {
@@ -356,4 +395,31 @@ enum salespeople_team {
   ProductandTrainingTeam
   DispatchandWarehouseTeam
   FinanceTeam
+}
+
+enum LeadSource {
+  PHONE
+  WEB
+  WHATSAPP
+  EMAIL
+  DIRECT
+}
+
+enum LeadType {
+  NEW_INVENTORY
+  RESALE
+}
+
+enum LeadStage {
+  NEW
+  FOLLOW_UP
+  VISIT
+  NEGOTIATION
+  WON
+  LOST
+}
+
+enum Labels {
+  HOME
+  WORK
 }

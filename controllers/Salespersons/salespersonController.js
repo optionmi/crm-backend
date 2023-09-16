@@ -131,4 +131,32 @@ const getAllSalespersons = async (req, res) => {
     }
 };
 
-module.exports = { createSalesperson, getSalespersonById, getAllSalespersons };
+const searchSalespersonsByName = async (req, res) => {
+    try {
+        const { name } = req.query;
+
+        const salespersons = await prisma.salespeople.findMany({
+            where: {
+                name: {
+                    contains: name,
+                },
+            },
+        });
+
+        if (salespersons.length === 0) {
+            return res.status(404).json({ message: "No salespersons found" });
+        }
+
+        return res.status(200).json(salespersons);
+    } catch (error) {
+        console.error(error);
+        res.sendStatus(500);
+    }
+};
+
+module.exports = {
+    createSalesperson,
+    getSalespersonById,
+    getAllSalespersons,
+    searchSalespersonsByName,
+};

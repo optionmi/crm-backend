@@ -26,7 +26,7 @@ const createClaim = async (req, res) => {
                 },
             });
 
-            return res.status(201).json({ data: claim });
+            return res.status(201).json({ claim });
         } else {
             return res.status(403).json({ message: "Permission denied" });
         }
@@ -40,7 +40,7 @@ const getAllClaims = async (req, res) => {
     try {
         // const claims = await TravellingClaims.findAll();
         const claims = await prisma.travellingclaims.findMany();
-        return res.status(200).json({ data: claims });
+        return res.status(200).json({ claims });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Server Error" });

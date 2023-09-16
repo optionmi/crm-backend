@@ -2,8 +2,6 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
-// const User = require('../../models/Auth/user');
-// const Salespersons = require('../../models/Salespersons/salesperson');
 const { PrismaClient } = require("@prisma/client");
 
 // Create an instance of the Prisma Client

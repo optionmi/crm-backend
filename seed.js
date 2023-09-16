@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 
 async function seedDatabase() {
     try {
+        // if (false) {
         // Seed Users
         if (
             !(await prisma.users.findUnique({
@@ -196,6 +197,24 @@ async function seedDatabase() {
                     standard: "Class 2",
                 },
             ],
+        });
+        // }
+        // Seed Contacts
+        const contact = await prisma.contacts.create({
+            data: {
+                name: "client",
+                emails: { create: { email: "client@example.com" } },
+                contact_numbers: {
+                    create: { number: "1234567890" },
+                },
+            },
+        });
+
+        // Seed Organizations
+        const organization = await prisma.organizations.create({
+            data: {
+                name: "abc org",
+            },
         });
     } catch (error) {
         console.error("Error seeding database:", error);
