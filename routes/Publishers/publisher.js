@@ -3,12 +3,16 @@ const router = express.Router();
 const authenticateUser = require("../../middleware/auth");
 const {
     createPublisher,
-    getPublisherData,
+    getPublisherById,
     getAllPublishers,
+    updatePublisherById,
+    deletePublisherById,
 } = require("../../controllers/Publishers/publisherController");
 
-router.post("/", authenticateUser(), createPublisher);
-router.get("/:id", authenticateUser(), getPublisherData);
+router.post("/create", authenticateUser(), createPublisher);
 router.get("/all", authenticateUser(), getAllPublishers);
+router.get("/:id", authenticateUser(), getPublisherById);
+router.put("/:id", authenticateUser(), updatePublisherById);
+router.delete("/:id", authenticateUser(), deletePublisherById);
 
 module.exports = router;

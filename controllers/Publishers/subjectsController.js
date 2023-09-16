@@ -25,27 +25,28 @@ const createSubject = async (req, res) => {
             publisherId = null;
         }
 
-        const newSubject = await prisma.Subjects.create({
+        const newSubject = await prisma.subjects.create({
             data: {
                 name,
             },
         });
 
-        res.status(201).json(newSubject);
+        res.status(201).json({
+            message: "Subject Created Successfully!",
+            ...newSubject,
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send("Server Error");
     }
 };
 
-// Function to fetch all Subjects (accessible to all users)
 const getAllSubjects = async (req, res) => {
     try {
-        // const Subjects = await Subjects.findAll();
-        const Subjects = await prisma.Subjects.findMany();
+        const Subjects = await prisma.subjects.findMany();
 
         if (Subjects.length > 0) {
-            return res.status(200).json(Subjects);
+            return res.status(200).json({ Subjects });
         } else {
             return res.status(404).json({ message: "No Subjects found" });
         }
@@ -65,7 +66,7 @@ const getSubjectById = async (req, res) => {
 
     try {
         // const Subject = await Subjects.findByPk(id);
-        const Subject = await prisma.Subjects.findUnique({ where: { id } });
+        const Subject = await prisma.subjects.findUnique({ where: { id } });
 
         if (Subject) {
             return res.status(200).json(Subject);
@@ -101,7 +102,7 @@ const updateSubject = async (req, res) => {
         // const [updatedRows] = await Subjects.update(updatedData, {
         //     where: { id },
         // });
-        const updatedRow = await prisma.Subjects.update({
+        const updatedRow = await prisma.subjects.update({
             where: { id },
             data: { ...updatedData },
         });
@@ -127,12 +128,12 @@ const deleteSubject = async (req, res) => {
     }
 
     try {
-        const deletedSubject = await prisma.Subjects.delete({
+        const deletedSubject = await prisma.subjects.delete({
             where: { id },
         });
         res.status(200).json({
             message: "Subject Deleted Successfully!",
-            data: deletedSubject,
+            ...deletedSubject,
         });
     } catch (error) {
         console.error(error);

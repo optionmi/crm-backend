@@ -17,22 +17,13 @@ const createPublisher = async (req, res) => {
     } = req.body;
 
     try {
-        // Check if the user is an admin
-        if (req.user.user_type !== "admin") {
-            return res.status(403).json({ message: "Permission denied" });
-        }
-
-        // Check if a user with the same email already exists
         const existingUser = await prisma.users.findUnique({
             where: { email },
         });
         if (existingUser) {
-            return res
-                .status(400)
-                .json({ message: "User with this email already exists" });
+            throw new Error("User with this email already exists");
         }
 
-        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 11);
 
         const user = await prisma.users.create({
@@ -40,16 +31,120 @@ const createPublisher = async (req, res) => {
                 email,
                 password: hashedPassword,
                 user_type: "publisher",
+                publishers: {
+                    create: {
+                        company_name,
+                        email,
+                        address,
+                        contact_person,
+                        phone_number,
+                        country,
+                        state,
+                        city,
+                        postal_code,
+                    },
+                },
             },
         });
 
         if (!user || !user.id) {
-            return res.status(500).json({ message: "User creation failed" });
+            throw new Error("User creation failed");
         }
 
-        const publisher = await prisma.create({
+        res.status(201).json({
+            message: "Publisher created successfully!",
+            ...user,
+        });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Server Error");
+    }
+};
+
+const getPublisherById = async (req, res) => {
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+        return res.status(400).send({ message: "Invalid ID" });
+    }
+
+    try {
+        const publisher = await prisma.publishers.findUnique({
+            where: { id },
+        });
+
+        if (publisher) {
+            return res.status(200).json(publisher);
+        }
+
+        return res.status(404).json({ message: "Publisher data not found" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Server Error");
+    }
+};
+
+const getAllPublishers = async (req, res) => {
+    if (req.user.user_type !== "admin") {
+        return res.status(403).json({ message: "Permission denied" });
+    }
+
+    try {
+        const publishers = await prisma.publishers.findMany();
+
+        if (publishers.length > 0) {
+            return res.status(200).json({ publishers });
+        } else {
+            return res.status(404).json({ message: "No publishers found" });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Server Error");
+    }
+};
+
+const deletePublisherById = async (req, res) => {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+        return res.status(400).send({ message: "Invalid ID" });
+    }
+
+    try {
+        const deletedPublisher = await prisma.publishers.delete({
+            where: {
+                id: id,
+            },
+        });
+        res.status(200).json({
+            message: "Publisher deleted successfully",
+            ...deletedPublisher,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+    }
+};
+
+const updatePublisherById = async (req, res) => {
+    const id = parseInt(req.params.id);
+    const {
+        company_name,
+        email,
+        address,
+        contact_person,
+        phone_number,
+        country,
+        state,
+        city,
+        postal_code,
+    } = req.body;
+
+    try {
+        const updatedPublisher = await prisma.publishers.update({
+            where: {
+                id: id,
+            },
             data: {
-                user_id: user.id,
                 company_name,
                 email,
                 address,
@@ -62,55 +157,20 @@ const createPublisher = async (req, res) => {
             },
         });
 
-        res.status(201).json(publisher);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send("Server Error");
-    }
-};
-
-const getPublisherData = async (req, res) => {
-    try {
-        const id = parseInt(req.params.id);
-        if (isNaN(id)) {
-            res.status(400).send({ message: "Invalid ID" });
-            return;
-        }
-
-        const publisher = await prisma.publishers.findUnique({
-            where: { id },
+        res.status(200).json({
+            message: "Publisher updated successfully",
+            ...updatedPublisher,
         });
-
-        if (publisher) {
-            return res.status(200).json(publisher);
-        } else {
-            return res
-                .status(404)
-                .json({ message: "Publisher data not found" });
-        }
     } catch (error) {
         console.error(error);
         res.status(500).send("Server Error");
     }
 };
 
-const getAllPublishers = async (req, res) => {
-    try {
-        if (req.user.user_type !== "admin") {
-            return res.status(403).json({ message: "Permission denied" });
-        }
-
-        const publishers = await prisma.publishers.findMany();
-
-        if (publishers.length > 0) {
-            return res.status(200).json({ publishers });
-        } else {
-            return res.status(404).json({ message: "No publishers found" });
-        }
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Server Error");
-    }
+module.exports = {
+    createPublisher,
+    getPublisherById,
+    getAllPublishers,
+    updatePublisherById,
+    deletePublisherById,
 };
-
-module.exports = { createPublisher, getPublisherData, getAllPublishers };

@@ -30,7 +30,7 @@ app.use(cors(corsOptions));
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/publisher", publisherRoutes);
+app.use("/api/publishers", publisherRoutes);
 app.use("/api/salesperson", salespersonRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/travelling-expense", travellingExpenseRoutes);
