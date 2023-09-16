@@ -103,7 +103,7 @@ const getAllPublishers = async (req, res) => {
         const publishers = await prisma.publishers.findMany();
 
         if (publishers.length > 0) {
-            return res.status(200).json({ data: publishers });
+            return res.status(200).json(publishers);
         } else {
             return res.status(404).json({ message: "No publishers found" });
         }
