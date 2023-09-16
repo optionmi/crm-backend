@@ -45,7 +45,7 @@ const getAllExpenses = async (req, res) => {
         // const expenses = await TravellingExpenses.findAll(); // Retrieve all travelling expenses
         const expenses = await prisma.travellingexpenses.findMany();
 
-        return res.status(200).json({ data: expenses });
+        return res.status(200).json({ expenses });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Server Error" });

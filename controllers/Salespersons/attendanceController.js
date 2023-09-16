@@ -68,7 +68,7 @@ const getAttendance = async (req, res) => {
                 where: { salesperson_id: id },
             });
 
-            return res.status(200).json({ data: attendance });
+            return res.status(200).json({ attendance });
         } else {
             return res.status(403).json({ message: "Permission denied" });
         }
