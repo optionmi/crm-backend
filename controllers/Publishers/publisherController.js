@@ -116,7 +116,7 @@ const deletePublisherById = async (req, res) => {
             },
         });
         res.status(200).json({
-            message: "Publisher deleted successfully",
+            message: "Publisher deleted successfully!",
             ...deletedPublisher,
         });
     } catch (error) {
@@ -158,7 +158,7 @@ const updatePublisherById = async (req, res) => {
         });
 
         res.status(200).json({
-            message: "Publisher updated successfully",
+            message: "Publisher updated successfully!",
             ...updatedPublisher,
         });
     } catch (error) {

@@ -125,7 +125,7 @@ const updateBoard = async (req, res) => {
 
         if (updatedRow) {
             return res.status(200).json({
-                message: "Board data updated successfully",
+                message: "Board updated successfully!",
                 data: updatedRow,
             });
         } else {
@@ -148,7 +148,7 @@ const deleteBoard = async (req, res) => {
             where: { id },
         });
         res.status(200).json({
-            message: "Board Deleted Successfully!",
+            message: "Board deleted successfully!",
             data: deletedBoard,
         });
     } catch (error) {

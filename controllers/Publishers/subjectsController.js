@@ -32,7 +32,7 @@ const createSubject = async (req, res) => {
         });
 
         res.status(201).json({
-            message: "Subject Created Successfully!",
+            message: "Subject created successfully!",
             ...newSubject,
         });
     } catch (error) {
@@ -109,7 +109,7 @@ const updateSubject = async (req, res) => {
 
         if (updatedRow) {
             return res.status(200).json({
-                message: "Subject data updated successfully",
+                message: "Subject updated successfully!",
                 data: updatedRow,
             });
         } else {
@@ -132,7 +132,7 @@ const deleteSubject = async (req, res) => {
             where: { id },
         });
         res.status(200).json({
-            message: "Subject Deleted Successfully!",
+            message: "Subject deleted successfully!",
             ...deletedSubject,
         });
     } catch (error) {

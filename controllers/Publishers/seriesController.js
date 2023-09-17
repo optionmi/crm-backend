@@ -31,7 +31,7 @@ const createSeries = async (req, res) => {
         });
 
         res.status(201).json({
-            message: "Series created Successfully!",
+            message: "Series created successfully!",
             ...newSeries,
         });
     } catch (error) {
@@ -96,7 +96,7 @@ const updateSeries = async (req, res) => {
 
         if (updatedRow) {
             return res.status(200).json({
-                message: "Series data updated successfully",
+                message: "Series updated successfully!",
                 ...updatedRow,
             });
         } else {
@@ -124,7 +124,7 @@ const deleteSeries = async (req, res) => {
         }
 
         return res.status(200).json({
-            message: "Series Deleted Successfully!",
+            message: "Series deleted successfully!",
             ...deletedSeries,
         });
     } catch (error) {
