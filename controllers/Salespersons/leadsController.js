@@ -54,9 +54,10 @@ const createLead = async (req, res) => {
                     },
                 },
             });
-            return res
-                .status(201)
-                .json({ message: "Lead Created Successfully!", data: lead });
+            return res.status(201).json({
+                message: "Lead created successfully!",
+                data: lead,
+            });
         } else {
             return res.status(403).json({ message: "Permission denied" });
         }
@@ -188,9 +189,10 @@ const updateLeadById = async (req, res) => {
             },
         });
 
-        return res
-            .status(200)
-            .json({ message: "Lead updated successfully", data: updatedLead });
+        return res.status(200).json({
+            message: "Lead updated successfully!",
+            data: updatedLead,
+        });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Server Error" });

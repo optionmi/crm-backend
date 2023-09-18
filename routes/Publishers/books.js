@@ -10,11 +10,11 @@ const {
     searchBooksByName,
 } = require("../../controllers/Publishers/booksController");
 
-router.post("/create", authenticateUser(), createBook);
-router.get("/", authenticateUser(), searchBooksByName);
-router.get("/all", authenticateUser(), getAllBooks);
-router.get("/:id", authenticateUser(), getBookById);
-router.put("/:id", authenticateUser(), updateBook);
-router.delete("/:id", authenticateUser(), deleteBook);
+router.post("/create", authenticateUser(["publisher"]), createBook);
+router.get("/", authenticateUser(["publisher"]), searchBooksByName);
+router.get("/all", authenticateUser(["publisher"]), getAllBooks);
+router.get("/:id", authenticateUser(["publisher"]), getBookById);
+router.put("/:id", authenticateUser(["publisher"]), updateBook);
+router.delete("/:id", authenticateUser(["publisher"]), deleteBook);
 
 module.exports = router;

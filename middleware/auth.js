@@ -8,7 +8,7 @@ function authenticateUser(allowedUserTypes = []) {
         if (!token) {
             return res
                 .status(401)
-                .json({ message: "No token, authorization denied" });
+                .json({ message: "No token, Authorization denied" });
         }
 
         try {

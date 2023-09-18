@@ -62,7 +62,7 @@ Follow the instructions below to set up and run the CRM backend application.
 1. Seed the database with initial data by running the following command:
 
     ```bash
-    node seed.js
+    npm run seed
     ```
 
 ### Starting the Server
