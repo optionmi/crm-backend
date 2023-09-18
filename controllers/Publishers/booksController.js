@@ -164,7 +164,7 @@ const searchBooksByName = async (req, res) => {
             return res.status(404).json({ message: "No Books found" });
         }
 
-        return res.status(200).json(books);
+        return res.status(200).json({ books });
     } catch (error) {
         console.error(error);
         res.sendStatus(500);

@@ -133,10 +133,41 @@ const deleteSeries = async (req, res) => {
     }
 };
 
+const getSeriesBySubjectId = async (req, res) => {
+    const subjectId = parseInt(req.params.id);
+    if (isNaN(subjectId)) {
+        return res.status(400).send({ message: "Invalid ID" });
+    }
+
+    try {
+        const series = await prisma.series.findMany({
+            where: {
+                subject_id: subjectId,
+            },
+        });
+
+        if (series.length > 0) {
+            return res.status(200).json(series);
+        } else {
+            return res
+                .status(404)
+                .json({ message: "No series found for the subject" });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Server Error");
+    }
+};
+
+module.exports = {
+    getSeriesBySubjectId,
+};
+
 module.exports = {
     createSeries,
     getAllSeries,
     getSeriesById,
     updateSeries,
     deleteSeries,
+    getSeriesBySubjectId,
 };
