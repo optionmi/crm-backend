@@ -21,7 +21,7 @@ model attendance {
   id             Int          @id @default(autoincrement())
   salesperson_id Int?
   date           DateTime?    @db.Date
-  is_present     Boolean?
+  attendance     Attendance?
   notes          String?      @db.Text
   createdAt      DateTime?    @default(now()) @db.Timestamp(0)
   updatedAt      DateTime?    @default(now()) @db.Timestamp(0)
@@ -422,4 +422,9 @@ enum LeadStage {
 enum Labels {
   HOME
   WORK
+}
+
+enum Attendance {
+  PRESENT
+  ABSENT
 }
