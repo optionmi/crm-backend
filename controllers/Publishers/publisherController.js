@@ -115,6 +115,11 @@ const deletePublisherById = async (req, res) => {
                 id: id,
             },
         });
+
+        const deletedUser = await prisma.users.delete({
+            where: { id: deletedPublisher.user_id },
+        });
+
         res.status(200).json({
             message: "Publisher deleted successfully!",
             ...deletedPublisher,
