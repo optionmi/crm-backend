@@ -154,9 +154,65 @@ const searchSalespersonsByName = async (req, res) => {
     }
 };
 
+const updateSalespersonById = async (req, res) => {
+    const salespersonId = parseInt(req.params.id);
+    if (isNaN(salespersonId)) {
+        res.status(400).send({ message: "Invalid ID" });
+        return;
+    }
+    const { name, email, phone_number, team } = req.body;
+
+    try {
+        const updatedSalesperson = await prisma.salespeople.update({
+            where: {
+                id: salespersonId,
+            },
+            data: {
+                name,
+                email,
+                phone_number,
+                team,
+            },
+        });
+
+        return res.status(200).json(updatedSalesperson);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Server Error");
+    }
+};
+
+const deleteSalespersonById = async (req, res) => {
+    const salespersonId = parseInt(req.params.id);
+    if (isNaN(salespersonId)) {
+        res.status(400).send({ message: "Invalid ID" });
+        return;
+    }
+
+    try {
+        await prisma.salespeople.delete({
+            where: {
+                id: salespersonId,
+            },
+        });
+
+        return res
+            .status(200)
+            .json({
+                message: "Salesperson deleted successfully",
+                ...salesperson,
+            });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Server Error");
+    }
+};
+
 module.exports = {
     createSalesperson,
     getSalespersonById,
     getAllSalespersons,
     searchSalespersonsByName,
+    updateSalespersonById,
+    deleteSalespersonById,
 };

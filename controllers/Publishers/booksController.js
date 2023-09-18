@@ -150,21 +150,21 @@ const deleteBook = async (req, res) => {
 
 const searchBooksByName = async (req, res) => {
     try {
-        const { title } = req.query;
+        const { search } = req.query;
 
         const books = await prisma.books.findMany({
             where: {
                 title: {
-                    contains: title,
+                    contains: search,
                 },
             },
         });
 
         if (books.length === 0) {
-            return res.status(404).json({ message: "No Books found" });
+            return res.status(200).json({ message: "No Books found" });
         }
 
-        return res.status(200).json(books);
+        return res.status(200).json({ books });
     } catch (error) {
         console.error(error);
         res.sendStatus(500);

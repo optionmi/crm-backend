@@ -95,27 +95,31 @@ const getAllContacts = async (req, res) => {
     }
 };
 
-const searchContactsByName = async (req, res) => {
+const searchContacts = async (req, res) => {
     try {
-        const { name } = req.query;
+        const { search } = req.query;
 
         const contacts = await prisma.contacts.findMany({
             where: {
                 name: {
-                    contains: name,
+                    contains: search,
                 },
             },
-            include: { contact_numbers: true, emails: true },
+            include: {
+                contact_numbers: true,
+                emails: true,
+                organization: true,
+            },
         });
 
         if (contacts.length === 0) {
-            res.status(404).json({ message: "No contacts found" });
+            return res.status(200).json({ message: "No contacts found" });
         }
 
-        res.status(200).json(contacts);
+        return res.status(200).json({ contacts });
     } catch (error) {
         console.error(error);
-        res.sendStatus(500);
+        return res.sendStatus(500);
     }
 };
 
@@ -123,5 +127,5 @@ module.exports = {
     createContact,
     getContactById,
     getAllContacts,
-    searchContactsByName,
+    searchContacts,
 };
