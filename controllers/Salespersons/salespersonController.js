@@ -133,21 +133,21 @@ const getAllSalespersons = async (req, res) => {
 
 const searchSalespersonsByName = async (req, res) => {
     try {
-        const { name } = req.query;
+        const { search } = req.query;
 
         const salespersons = await prisma.salespeople.findMany({
             where: {
                 name: {
-                    contains: name,
+                    contains: search,
                 },
             },
         });
 
         if (salespersons.length === 0) {
-            return res.status(404).json({ message: "No salespersons found" });
+            return res.status(200).json({ message: "No salespersons found" });
         }
 
-        return res.status(200).json(salespersons);
+        return res.status(200).json({ salespersons });
     } catch (error) {
         console.error(error);
         res.sendStatus(500);
@@ -196,12 +196,10 @@ const deleteSalespersonById = async (req, res) => {
             },
         });
 
-        return res
-            .status(200)
-            .json({
-                message: "Salesperson deleted successfully",
-                ...salesperson,
-            });
+        return res.status(200).json({
+            message: "Salesperson deleted successfully",
+            ...salesperson,
+        });
     } catch (error) {
         console.error(error);
         return res.status(500).send("Server Error");
