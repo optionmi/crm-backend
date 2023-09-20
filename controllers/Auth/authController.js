@@ -54,6 +54,7 @@ router.post("/login", async (req, res) => {
                                 res.json({
                                     message: "Logged in successfully",
                                     token,
+                                    id: user.id,
                                     name:
                                         user.admin?.name ||
                                         user.publishers?.name ||
@@ -77,6 +78,7 @@ router.post("/login", async (req, res) => {
                     res.json({
                         message: "Logged in successfully",
                         token,
+                        id: user.id,
                         name:
                             user.admin?.name ||
                             user.publishers?.name ||
