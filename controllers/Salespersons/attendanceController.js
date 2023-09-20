@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 // Function to create attendance
 const createAttendance = async (req, res) => {
     try {
-        const { is_present } = req.body;
+        const { attendance } = req.body;
 
         // Check if the user is in the 'SalesTeam'
         // const user = await Salespeople.findOne({
@@ -26,7 +26,7 @@ const createAttendance = async (req, res) => {
             const attendance = await prisma.attendance.create({
                 data: {
                     salesperson_id: user.id,
-                    is_present,
+                    attendance,
                     date: new Date(),
                 },
             });
