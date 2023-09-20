@@ -18,49 +18,54 @@ const createLead = async (req, res) => {
             book_id,
             price,
             quantity,
+            total_amount,
         } = req.body;
 
-        // Check if the user is in the 'SalesTeam'
-        const user = await prisma.salespeople.findFirst({
-            where: { user_id: req.user.id, team: "SalesTeam" },
-        });
+        const date = new Date(expected_close_date);
+        let expected_close_date_formatted = date.toISOString();
 
-        if (user) {
-            // Create the lead
-            const lead = await prisma.leads.create({
-                data: {
-                    client_name,
-                    requirement,
-                    budget,
-                    source,
-                    type,
-                    expected_close_date,
-                    stage,
-                    salesperson: {
-                        connect: { id: salesperson_id },
-                    },
-                    leads_contact_person: {
-                        create: {
-                            contact: { connect: { id: contact_person_id } },
-                            organization: { connect: { id: organization_id } },
-                        },
-                    },
-                    leads_products: {
-                        create: {
-                            book: { connect: { id: book_id } },
-                            price,
-                            quantity,
-                        },
+        // Check if the user is in the 'SalesTeam'
+        // const user = await prisma.salespeople.findFirst({
+        //     where: { user_id: req.user.id, team: "SalesTeam" },
+        // });
+
+        // if (user) {
+        // Create the lead
+        const lead = await prisma.leads.create({
+            data: {
+                client_name,
+                requirement,
+                budget,
+                source,
+                type,
+                expected_close_date: expected_close_date_formatted,
+                stage,
+                salesperson: {
+                    connect: { id: salesperson_id },
+                },
+                leads_contact_person: {
+                    create: {
+                        contact: { connect: { id: contact_person_id } },
+                        organization: { connect: { id: organization_id } },
                     },
                 },
-            });
-            return res.status(201).json({
-                message: "Lead created successfully!",
-                data: lead,
-            });
-        } else {
-            return res.status(403).json({ message: "Permission denied" });
-        }
+                leads_products: {
+                    create: {
+                        book: { connect: { id: book_id } },
+                        price,
+                        quantity,
+                        total_amount,
+                    },
+                },
+            },
+        });
+        return res.status(201).json({
+            message: "Lead created successfully!",
+            data: lead,
+        });
+        // } else {
+        //     return res.status(403).json({ message: "Permission denied" });
+        // }
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Server Error" });
@@ -83,6 +88,8 @@ const getAllLeads = async (req, res) => {
                         },
                     },
                 },
+                leads_products: true,
+                salesperson: true,
             },
         });
         return res.status(200).json({ leads });

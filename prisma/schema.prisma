@@ -314,13 +314,14 @@ model leads_contact_person {
 }
 
 model leads_products {
-  id        Int       @id @default(autoincrement())
-  book_id   Int
-  price     Float
-  quantity  Int
-  createdAt DateTime? @default(now()) @db.Timestamp(0)
-  updatedAt DateTime? @default(now()) @db.Timestamp(0)
-  book      books     @relation(fields: [book_id], references: [id])
+  id           Int       @id @default(autoincrement())
+  book_id      Int
+  price        Float
+  quantity     Int
+  total_amount Float?
+  createdAt    DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt    DateTime? @default(now()) @db.Timestamp(0)
+  book         books     @relation(fields: [book_id], references: [id])
 
   lead leads[]
 }

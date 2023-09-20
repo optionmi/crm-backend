@@ -8,9 +8,9 @@ const {
 } = require("../../controllers/Salespersons/leadsController");
 const authenticateUser = require("../../middleware/auth");
 
-router.get("/", authenticateUser(), getAllLeads);
-router.get("/:id", authenticateUser(), getLeadById);
+router.get("/all", authenticateUser(), getAllLeads);
 router.post("/create", authenticateUser(), createLead);
+router.get("/:id", authenticateUser(), getLeadById);
 router.post("/:id", authenticateUser(), updateLeadById);
 
 module.exports = router;
