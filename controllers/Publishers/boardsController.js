@@ -45,7 +45,6 @@ const createBoard = async (req, res) => {
         const Board = await prisma.boards.create({
             data: {
                 name,
-                publisher_id: publisherId,
             },
         });
 

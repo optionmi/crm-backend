@@ -7,14 +7,14 @@ const prisma = new PrismaClient();
 // Function to create attendance
 const createAttendance = async (req, res) => {
     try {
-        const { is_present } = req.body;
+        const { is_present, id } = req.body;
 
         // Check if the user is in the 'SalesTeam'
         // const user = await Salespeople.findOne({
         //     where: { user_id: req.user.id, team: "SalesTeam" },
         // });
         const user = await prisma.salespeople.findFirst({
-            where: { user_id: req.user.id, team: "SalesTeam" },
+            where: { user_id: id, team: "SalesTeam" },
         });
 
         if (user) {
@@ -26,7 +26,7 @@ const createAttendance = async (req, res) => {
             const attendance = await prisma.attendance.create({
                 data: {
                     salesperson_id: user.id,
-                    is_present,
+                    attendance: is_present,
                     date: new Date(),
                 },
             });
@@ -56,7 +56,7 @@ const getAttendance = async (req, res) => {
         //     where: { id: salespersonId, team: "SalesTeam" },
         // });
         const user = await prisma.salespeople.findUnique({
-            where: { id, team: "SalesTeam" },
+            where: { user_id: id, team: "SalesTeam" },
         });
 
         if (user) {
@@ -65,7 +65,7 @@ const getAttendance = async (req, res) => {
             //     where: { salesperson_id: salespersonId },
             // });
             const attendance = await prisma.attendance.findMany({
-                where: { salesperson_id: id },
+                where: { salesperson_id: user.id },
             });
 
             return res.status(200).json({ attendance });
