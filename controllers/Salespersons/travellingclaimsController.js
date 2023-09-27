@@ -5,9 +5,9 @@ const prisma = new PrismaClient();
 
 const createClaim = async (req, res) => {
     try {
-        const { claim_description, amount, claim_date } = req.body;
-        const user = await Salespeople.findOne({
-            where: { user_id: req.user.id },
+        const { claim_description, amount, claim_date, id } = req.body;
+        const user = await prisma.salespeople.findFirst({
+            where: { user_id: id },
         });
 
         if (
@@ -22,7 +22,7 @@ const createClaim = async (req, res) => {
                     salesperson_id: user.id,
                     claim_description,
                     amount,
-                    claim_date,
+                    claim_date: new Date(),
                 },
             });
 
