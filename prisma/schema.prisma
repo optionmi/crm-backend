@@ -10,8 +10,8 @@ datasource db {
 model admin {
   id        Int       @id @default(autoincrement())
   user_id   Int       @unique(map: "user_id")
-  name      String    @db.VarChar(255)
-  email     String    @unique(map: "email") @db.VarChar(255)
+  // name      String    @db.VarChar(255)
+  // email     String    @unique(map: "email") @db.VarChar(255)
   createdAt DateTime? @default(now()) @db.Timestamp(0)
   updatedAt DateTime? @default(now()) @db.Timestamp(0)
   users     users     @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "admin_ibfk_1")
@@ -217,15 +217,20 @@ model travellingexpenses {
 }
 
 model users {
-  id          Int             @id @default(autoincrement())
-  email       String          @unique(map: "email") @db.VarChar(255)
-  password    String          @db.VarChar(255)
-  user_type   users_user_type
-  createdAt   DateTime?       @default(now()) @db.Timestamp(0)
-  updatedAt   DateTime?       @default(now()) @db.Timestamp(0)
-  admin       admin?
-  publishers  publishers?
-  salespeople salespeople?
+  id                         Int                          @id @default(autoincrement())
+  name                       String
+  email                      String                       @unique(map: "email") @db.VarChar(255)
+  password                   String                       @db.VarChar(255)
+  user_type                  users_user_type
+  createdAt                  DateTime?                    @default(now()) @db.Timestamp(0)
+  updatedAt                  DateTime?                    @default(now()) @db.Timestamp(0)
+  admin                      admin?
+  publishers                 publishers?
+  salespeople                salespeople?
+  lead_notes                 lead_notes[]
+  lead_files                 lead_files[]
+  lead_activities            lead_activities[]
+  lead_activity_participants lead_activity_participants[]
 }
 
 model boards {
@@ -273,35 +278,42 @@ model books {
   productgifting   productgifting[]
   specimensampling specimensampling[]
 
-  board          boards           @relation(fields: [board_id], references: [id])
-  subject        subjects         @relation(fields: [subject_id], references: [id])
-  series         series           @relation(fields: [series_id], references: [id])
-  leads_products leads_products[]
+  board         boards          @relation(fields: [board_id], references: [id])
+  subject       subjects        @relation(fields: [subject_id], references: [id])
+  series        series          @relation(fields: [series_id], references: [id])
+  lead_products lead_products[]
 
   @@index([publisher_id], map: "publisher_id")
 }
 
 model leads {
-  id                      Int        @id @default(autoincrement())
-  client_name             String
-  requirement             String?
-  budget                  Float?
-  source                  LeadSource
-  type                    LeadType
-  expected_close_date     DateTime?
-  stage                   LeadStage
-  salesperson_id          Int
-  leads_contact_person_id Int?
-  leads_products_id       Int?
-  createdAt               DateTime?  @default(now()) @db.Timestamp(0)
-  updatedAt               DateTime?  @default(now()) @db.Timestamp(0)
+  id                     Int        @id @default(autoincrement())
+  client_name            String
+  requirement            String?
+  budget                 Float?
+  source                 LeadSource
+  type                   LeadType
+  expected_close_date    DateTime?
+  stage                  LeadStage
+  total_amount           Float?
+  salesperson_id         Int
+  lead_contact_person_id Int?
+  won_value              Float?
+  lost_reason            String?
+  closed_date            DateTime?
+  createdAt              DateTime?  @default(now()) @db.Timestamp(0)
+  updatedAt              DateTime?  @default(now()) @db.Timestamp(0)
 
-  salesperson          salespeople           @relation(fields: [salesperson_id], references: [id])
-  leads_contact_person leads_contact_person? @relation(fields: [leads_contact_person_id], references: [id])
-  leads_products       leads_products?       @relation(fields: [leads_products_id], references: [id])
+  salesperson                salespeople                  @relation(fields: [salesperson_id], references: [id])
+  lead_contact_person        lead_contact_person?         @relation(fields: [lead_contact_person_id], references: [id])
+  lead_products              lead_products[]
+  lead_notes                 lead_notes[]
+  lead_files                 lead_files[]
+  lead_activities            lead_activities[]
+  lead_activity_participants lead_activity_participants[]
 }
 
-model leads_contact_person {
+model lead_contact_person {
   id              Int           @id @default(autoincrement())
   contact_id      Int
   organization_id Int
@@ -313,29 +325,30 @@ model leads_contact_person {
   lead leads[]
 }
 
-model leads_products {
-  id           Int       @id @default(autoincrement())
-  book_id      Int
-  price        Float
-  quantity     Int
-  total_amount Float?
-  createdAt    DateTime? @default(now()) @db.Timestamp(0)
-  updatedAt    DateTime? @default(now()) @db.Timestamp(0)
-  book         books     @relation(fields: [book_id], references: [id])
+model lead_products {
+  id        Int       @id @default(autoincrement())
+  book_id   Int
+  price     Float
+  quantity  Int
+  lead_id   Int
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @default(now()) @db.Timestamp(0)
+  book      books     @relation(fields: [book_id], references: [id])
 
-  lead leads[]
+  lead leads @relation(fields: [lead_id], references: [id])
 }
 
 model contacts {
-  id                   Int                    @id @default(autoincrement())
-  name                 String
-  emails               emails[]
-  contact_numbers      contact_numbers[]
-  leads_contact_person leads_contact_person[]
-  organization         organizations?         @relation(fields: [organization_id], references: [id])
-  organization_id      Int?
-  createdAt            DateTime?              @default(now()) @db.Timestamp(0)
-  updatedAt            DateTime?              @default(now()) @db.Timestamp(0)
+  id                         Int                          @id @default(autoincrement())
+  name                       String
+  emails                     emails[]
+  contact_numbers            contact_numbers[]
+  lead_contact_person        lead_contact_person[]
+  organization               organizations?               @relation(fields: [organization_id], references: [id])
+  organization_id            Int?
+  createdAt                  DateTime?                    @default(now()) @db.Timestamp(0)
+  updatedAt                  DateTime?                    @default(now()) @db.Timestamp(0)
+  lead_activity_participants lead_activity_participants[]
 }
 
 model emails {
@@ -359,12 +372,67 @@ model contact_numbers {
 }
 
 model organizations {
-  id                   Int                    @id @default(autoincrement())
-  name                 String
-  createdAt            DateTime?              @default(now()) @db.Timestamp(0)
-  updatedAt            DateTime?              @default(now()) @db.Timestamp(0)
-  leads_contact_person leads_contact_person[]
-  contacts             contacts[]
+  id                  Int                   @id @default(autoincrement())
+  name                String
+  createdAt           DateTime?             @default(now()) @db.Timestamp(0)
+  updatedAt           DateTime?             @default(now()) @db.Timestamp(0)
+  lead_contact_person lead_contact_person[]
+  contacts            contacts[]
+}
+
+model lead_notes {
+  id        Int       @id @default(autoincrement())
+  note      String
+  lead_id   Int
+  user_id   Int
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @default(now()) @db.Timestamp(0)
+  lead      leads     @relation(fields: [lead_id], references: [id])
+  user      users     @relation(fields: [user_id], references: [id])
+}
+
+model lead_files {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  file_name   String
+  lead_id     Int
+  user_id     Int
+  createdAt   DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime? @default(now()) @db.Timestamp(0)
+  lead        leads     @relation(fields: [lead_id], references: [id])
+  user        users     @relation(fields: [user_id], references: [id])
+}
+
+model lead_activities {
+  id           Int                          @id @default(autoincrement())
+  title        String
+  type         ActivityType
+  description  String
+  dt_from      DateTime
+  dt_to        DateTime
+  location     String
+  lead_id      Int
+  user_id      Int
+  createdAt    DateTime?                    @default(now()) @db.Timestamp(0)
+  updatedAt    DateTime?                    @default(now()) @db.Timestamp(0)
+  lead         leads                        @relation(fields: [lead_id], references: [id])
+  user         users                        @relation(fields: [user_id], references: [id])
+  participants lead_activity_participants[]
+}
+
+model lead_activity_participants {
+  id          Int             @id @default(autoincrement())
+  activity_id Int
+  contact_id  Int?
+  user_id     Int?
+  leadsId     Int?
+  createdAt   DateTime?       @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime?       @default(now()) @db.Timestamp(0)
+  activity    lead_activities @relation(fields: [activity_id], references: [id])
+  user        users?          @relation(fields: [user_id], references: [id])
+  contact     contacts?       @relation(fields: [contact_id], references: [id])
+  leads       leads?          @relation(fields: [leadsId], references: [id])
 }
 
 // Enums
@@ -428,4 +496,10 @@ enum Labels {
 enum Attendance {
   PRESENT
   ABSENT
+}
+
+enum ActivityType {
+  CALL
+  MEETING
+  LUNCH
 }

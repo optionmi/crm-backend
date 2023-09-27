@@ -17,11 +17,9 @@ async function seedDatabase() {
                     email: "admin@example.com",
                     password: await bcrypt.hash("password", 11),
                     user_type: "admin",
+                    name: "admin",
                     admin: {
-                        create: {
-                            name: "admin",
-                            email: "admin@example.com",
-                        },
+                        create: {},
                     },
                 },
             });
@@ -36,6 +34,7 @@ async function seedDatabase() {
                     email: "publisher@example.com",
                     password: await bcrypt.hash("password", 11),
                     user_type: "publisher",
+                    name: "publisher",
                     publishers: {
                         create: {
                             company_name: "abc",
@@ -62,6 +61,7 @@ async function seedDatabase() {
                     email: "salesperson@example.com",
                     password: await bcrypt.hash("password", 11),
                     user_type: "salesperson",
+                    name: "salesperson",
                     salespeople: {
                         create: {
                             name: "salesperson",

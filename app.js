@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const path = require("path");
 
 // Import routes
 const authRoutes = require("./routes/Auth/auth");
@@ -41,6 +42,21 @@ app.use("/api/subjects", subjectsRoutes);
 app.use("/api/series", seriesRoutes);
 app.use("/api/books", booksRoutes);
 app.use("/api/contacts", contactsRoutes);
+
+// Download Files
+app.get("/files/lead/:fileName", (req, res) => {
+    const fileName = req.params.fileName;
+    // const parentDir = req.params.parentDir;
+    const filePath = path.join(__dirname, `/files/lead/`, fileName);
+
+    // Use the res.download() method to send the file for download
+    res.download(filePath, (err) => {
+        if (err) {
+            // Handle errors, such as the file not existing
+            res.status(404).send("File not found");
+        }
+    });
+});
 
 // Start the server
 const PORT = process.env.PORT || 8000;

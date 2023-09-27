@@ -55,11 +55,11 @@ router.post("/login", async (req, res) => {
                                     message: "Logged in successfully",
                                     token,
                                     id: user.id,
-                                    name:
-                                        user.admin?.name ||
-                                        user.publishers?.name ||
-                                        user.salespeople?.name ||
-                                        "Unknown",
+                                    name: user.name,
+                                    // user.admin?.name ||
+                                    // user.publishers?.name ||
+                                    // user.salespeople?.name ||
+                                    // "Unknown",
                                     email: user.email,
                                     user_type: user.user_type,
                                     team: salesperson.team,
@@ -79,11 +79,11 @@ router.post("/login", async (req, res) => {
                         message: "Logged in successfully",
                         token,
                         id: user.id,
-                        name:
-                            user.admin?.name ||
-                            user.publishers?.name ||
-                            user.salespeople?.name ||
-                            "Unknown",
+                        name: user.name,
+                        // user.admin?.name ||
+                        // user.publishers?.name ||
+                        // user.salespeople?.name ||
+                        // "Unknown",
                         email: user.email,
                         user_type: user.user_type,
                     });
