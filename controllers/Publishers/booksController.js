@@ -32,12 +32,12 @@ const createBook = async (req, res) => {
                     ? { connect: { id: publisherId } }
                     : undefined,
                 board: {
-                    connect: { id: board_id },
+                    connect: { id: parseInt(board_id) },
                 },
                 subject: {
-                    connect: { id: subject_id },
+                    connect: { id: parseInt(subject_id) },
                 },
-                series: { connect: { id: series_id } },
+                series: { connect: { id: parseInt(series_id) } },
             },
         });
 
@@ -74,7 +74,10 @@ const getBookById = async (req, res) => {
     }
 
     try {
-        const book = await prisma.books.findUnique({ where: { id } });
+        const book = await prisma.books.findUnique({
+            where: { id },
+            include: { series: true },
+        });
 
         if (book) {
             return res.status(200).json(book);
@@ -144,7 +147,7 @@ const deleteBook = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Failed to delete book");
+        res.status(500).send({ message: "Failed to delete book" });
     }
 };
 

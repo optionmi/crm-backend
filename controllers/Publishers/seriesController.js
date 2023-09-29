@@ -26,7 +26,7 @@ const createSeries = async (req, res) => {
         const newSeries = await prisma.series.create({
             data: {
                 name,
-                subject_id,
+                subject: { connect: { id: parseInt(subject_id) } },
             },
         });
 
@@ -42,7 +42,9 @@ const createSeries = async (req, res) => {
 
 const getAllSeries = async (req, res) => {
     try {
-        const series = await prisma.series.findMany();
+        const series = await prisma.series.findMany({
+            include: { subject: true },
+        });
 
         if (series.length > 0) {
             return res.status(200).json(series);
@@ -129,7 +131,7 @@ const deleteSeries = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        return res.status(500).send("Failed to delete Series");
+        return res.status(500).send({ message: "Failed to delete Series" });
     }
 };
 

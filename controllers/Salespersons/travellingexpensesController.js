@@ -6,10 +6,10 @@ const prisma = new PrismaClient();
 
 const createExpense = async (req, res) => {
     try {
-        const { expense_description, amount } = req.body;
+        const { expense_description, amount, id } = req.body;
 
-        const user = await Salespeople.findOne({
-            where: { user_id: req.user.id },
+        const user = await prisma.salespeople.findFirst({
+            where: { user_id: id },
         });
 
         const allowedTeams = [

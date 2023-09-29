@@ -45,7 +45,6 @@ const createBoard = async (req, res) => {
         const Board = await prisma.boards.create({
             data: {
                 name,
-                publisher_id: publisherId,
             },
         });
 
@@ -153,7 +152,7 @@ const deleteBoard = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Failed to delete Board");
+        res.status(500).send({ message: "Failed to delete Board" });
     }
 };
 
