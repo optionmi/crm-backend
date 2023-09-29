@@ -152,7 +152,7 @@ const deleteBoard = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Failed to delete Board");
+        res.status(500).send({ message: "Failed to delete Board" });
     }
 };
 
