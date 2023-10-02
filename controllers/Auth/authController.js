@@ -32,7 +32,9 @@ router.post("/login", async (req, res) => {
         }
 
         // Create and sign a JSON Web Token
-        const payload = { user: { id: user.id, user_type: user.user_type } };
+        const payload = {
+            user: { id: user.id, user_type: user.user_type, email: user.email },
+        };
         jwt.sign(
             payload,
             process.env.JWT_SECRET,
@@ -63,7 +65,7 @@ router.post("/login", async (req, res) => {
                                     email: user.email,
                                     user_type: user.user_type,
                                     team: salesperson.team,
-                                    id:user.id
+                                    id: user.id,
                                 });
                             } else {
                                 res.status(401).send("Access Denied");
@@ -87,7 +89,7 @@ router.post("/login", async (req, res) => {
                         // "Unknown",
                         email: user.email,
                         user_type: user.user_type,
-                        id:user.id
+                        id: user.id,
                     });
                 }
             }

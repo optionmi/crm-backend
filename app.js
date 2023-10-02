@@ -17,6 +17,7 @@ const seriesRoutes = require("./routes/Publishers/series");
 const booksRoutes = require("./routes/Publishers/books");
 const contactsRoutes = require("./routes/Contacts/contacts");
 const usersRoutes = require("./routes/Users/users");
+const emailRoute = require("./routes/Email/email");
 
 // Middleware
 app.use(express.json());
@@ -44,6 +45,9 @@ app.use("/api/series", seriesRoutes);
 app.use("/api/books", booksRoutes);
 app.use("/api/contacts", contactsRoutes);
 app.use("/api/users", usersRoutes);
+
+// Email
+app.use("/api", emailRoute);
 
 // Download Files
 app.get("/files/lead/:fileName", (req, res) => {

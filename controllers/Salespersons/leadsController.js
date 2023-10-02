@@ -176,6 +176,7 @@ const getLeadById = async (req, res) => {
                         },
                     },
                 },
+                lead_emails: { include: { user: true } },
             },
         });
 
@@ -302,6 +303,7 @@ const updateLeadById = async (req, res) => {
                     organization: { connect: { id: organization_id } },
                 },
             },
+            lead_emails: { include: { user: true } },
         };
         // if (
         //     lead_products_formatted.length > 0 &&
@@ -403,6 +405,7 @@ const updateLeadStage = async (req, res) => {
                         },
                     },
                 },
+                lead_emails: { include: { user: true } },
             },
         });
         return res

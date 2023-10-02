@@ -231,6 +231,7 @@ model users {
   lead_files                 lead_files[]
   lead_activities            lead_activities[]
   lead_activity_participants lead_activity_participants[]
+  lead_emails                lead_emails[]
 }
 
 model boards {
@@ -311,6 +312,7 @@ model leads {
   lead_files                 lead_files[]
   lead_activities            lead_activities[]
   lead_activity_participants lead_activity_participants[]
+  lead_emails                lead_emails[]
 }
 
 model lead_contact_person {
@@ -341,7 +343,7 @@ model lead_products {
 model contacts {
   id                         Int                          @id @default(autoincrement())
   name                       String
-  emails                     emails[]
+  emails                     contact_emails[]
   contact_numbers            contact_numbers[]
   lead_contact_person        lead_contact_person[]
   organization               organizations?               @relation(fields: [organization_id], references: [id])
@@ -351,7 +353,7 @@ model contacts {
   lead_activity_participants lead_activity_participants[]
 }
 
-model emails {
+model contact_emails {
   id         Int       @id @default(autoincrement())
   contact_id Int
   email      String
@@ -433,6 +435,19 @@ model lead_activity_participants {
   user        users?          @relation(fields: [user_id], references: [id])
   contact     contacts?       @relation(fields: [contact_id], references: [id])
   leads       leads?          @relation(fields: [leadsId], references: [id])
+}
+
+model lead_emails {
+  id        Int       @id @default(autoincrement())
+  lead_id   Int
+  user_id   Int
+  to        String
+  subject   String
+  message   String
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @default(now()) @db.Timestamp(0)
+  lead      leads     @relation(fields: [lead_id], references: [id])
+  user      users     @relation(fields: [user_id], references: [id])
 }
 
 // Enums
