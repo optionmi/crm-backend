@@ -169,6 +169,7 @@ model salespeople {
   travellingclaims   travellingclaims[]
   travellingexpenses travellingexpenses[]
   leads              leads[]
+  locations          Location[]
 
   @@index([publisher_id], map: "publisher_id")
 }
@@ -434,6 +435,16 @@ model lead_activity_participants {
   contact     contacts?       @relation(fields: [contact_id], references: [id])
   leads       leads?          @relation(fields: [leadsId], references: [id])
 }
+
+model Location {
+  id            Int      @id @default(autoincrement())
+  latitude      Decimal  @db.Decimal(10, 6)
+  longitude     Decimal  @db.Decimal(10, 6)
+  salesperson_id Int
+  timestamp     DateTime @default(now()) @updatedAt
+  salesperson   salespeople @relation(fields: [salesperson_id], references: [id], onDelete: Cascade)
+}
+
 
 // Enums
 enum negotiation_result {
