@@ -63,7 +63,7 @@ router.post("/login", async (req, res) => {
                                     email: user.email,
                                     user_type: user.user_type,
                                     team: salesperson.team,
-                                    id:user.id
+                                    id: user.id,
                                 });
                             } else {
                                 res.status(401).send("Access Denied");
@@ -87,7 +87,7 @@ router.post("/login", async (req, res) => {
                         // "Unknown",
                         email: user.email,
                         user_type: user.user_type,
-                        id:user.id
+                        id: user.id,
                     });
                 }
             }
