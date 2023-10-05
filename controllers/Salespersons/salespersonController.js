@@ -154,6 +154,25 @@ const searchSalespersonsByName = async (req, res) => {
     }
 };
 
+const searchSalespersonsByTeam = async (req, res) => {
+    try {
+        const salespersons = await prisma.salespeople.findMany({
+            where: {
+                team: "SalesTeam",
+            },
+        });
+
+        if (salespersons.length === 0) {
+            return res.status(200).json({ message: "No salespersons found" });
+        }
+
+        return res.status(200).json({ salespersons });
+    } catch (error) {
+        console.error(error);
+        res.sendStatus(500);
+    }
+};
+
 const updateSalespersonById = async (req, res) => {
     const salespersonId = parseInt(req.params.id);
     if (isNaN(salespersonId)) {
@@ -213,4 +232,5 @@ module.exports = {
     searchSalespersonsByName,
     updateSalespersonById,
     deleteSalespersonById,
+    searchSalespersonsByTeam,
 };
