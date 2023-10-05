@@ -28,6 +28,7 @@ const createLocation = async (req, res) => {
 
 // Update an existing location
 const updateLocation = async (req, res) => {
+    console.log("updating...");
     const id = parseInt(req.params.id);
 
     if (isNaN(id)) {
@@ -39,7 +40,9 @@ const updateLocation = async (req, res) => {
     try {
         const updatedRow = await prisma.location.update({
             where: { id },
-            data: { ...locationData },
+            data: {
+                ...locationData,
+            },
         });
 
         if (updatedRow) {
