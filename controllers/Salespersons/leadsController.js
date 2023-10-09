@@ -491,6 +491,36 @@ const addActivity = async (req, res) => {
     }
 };
 
+const DailyPlanning = async (req, res) => {
+    const leadId = parseInt(req.params.id);
+    if (isNaN(leadId)) {
+        return res.status(400).json({ message: "Invalid ID" });
+    }
+
+    const { visit_date, visit_location, notes } = req.body;
+
+    const salesperson = await prisma.leads.findFirst({
+        where: { id: leadId },
+    });
+
+    try {
+        const lead = await prisma.dailyplanning.create({
+            data: {
+                visit_date: new Date(visit_date).toISOString(),
+                visit_location,
+                notes,
+                salesperson_id: salesperson.salesperson_id,
+            },
+        });
+        return res
+            .status(201)
+            .json({ message: "Visit Added successfully!", ...lead });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Server Error" });
+    }
+};
+
 module.exports = {
     createLead,
     getAllLeads,
@@ -500,4 +530,5 @@ module.exports = {
     addFile,
     updateLeadStage,
     addActivity,
+    DailyPlanning,
 };
