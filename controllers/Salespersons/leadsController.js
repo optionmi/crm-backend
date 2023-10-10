@@ -303,7 +303,6 @@ const updateLeadById = async (req, res) => {
                     organization: { connect: { id: organization_id } },
                 },
             },
-            lead_emails: { include: { user: true } },
         };
         // if (
         //     lead_products_formatted.length > 0 &&
@@ -494,6 +493,29 @@ const addActivity = async (req, res) => {
     }
 };
 
+const searchLeads = async (req, res) => {
+    try {
+        const { search } = req.query;
+
+        const leads = await prisma.leads.findMany({
+            where: {
+                client_name: {
+                    contains: search,
+                },
+            },
+        });
+
+        if (leads.length === 0) {
+            return res.status(200).json({ message: "No Leads found" });
+        }
+
+        return res.status(200).json({ leads });
+    } catch (error) {
+        console.error(error);
+        return res.sendStatus(500);
+    }
+};
+
 module.exports = {
     createLead,
     getAllLeads,
@@ -503,4 +525,5 @@ module.exports = {
     addFile,
     updateLeadStage,
     addActivity,
+    searchLeads,
 };

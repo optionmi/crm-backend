@@ -11,6 +11,7 @@ const {
     addNote,
     addFile,
     addActivity,
+    searchLeads,
 } = require("../../controllers/Salespersons/leadsController");
 const authenticateUser = require("../../middleware/auth");
 
@@ -25,6 +26,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+router.get("/", authenticateUser(), searchLeads);
 router.get("/all", authenticateUser(), getAllLeads);
 router.post("/create", authenticateUser(), createLead);
 router.post("/update-stage/:id", authenticateUser(), updateLeadStage);
