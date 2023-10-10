@@ -12,6 +12,7 @@ const {
     addFile,
     addActivity,
     searchLeads,
+    DailyPlanning,
 } = require("../../controllers/Salespersons/leadsController");
 const authenticateUser = require("../../middleware/auth");
 
@@ -32,6 +33,7 @@ router.post("/create", authenticateUser(), createLead);
 router.post("/update-stage/:id", authenticateUser(), updateLeadStage);
 router.post("/add-note/:id", authenticateUser(), addNote);
 router.post("/add-activity/:id", authenticateUser(), addActivity);
+router.post("/add-visit/:id", authenticateUser(), DailyPlanning);
 router.post(
     "/add-file/:id",
     authenticateUser(),
