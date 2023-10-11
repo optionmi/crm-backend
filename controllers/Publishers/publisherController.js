@@ -14,6 +14,7 @@ const createPublisher = async (req, res) => {
         city,
         postal_code,
         password,
+        name,
     } = req.body;
 
     try {
@@ -29,6 +30,7 @@ const createPublisher = async (req, res) => {
         const user = await prisma.users.create({
             data: {
                 email,
+                name,
                 password: hashedPassword,
                 user_type: "publisher",
                 publishers: {

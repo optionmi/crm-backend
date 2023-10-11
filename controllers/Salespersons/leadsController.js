@@ -213,6 +213,7 @@ const updateLeadById = async (req, res) => {
         lead_products,
         // contact_id,
         lead_contact_person,
+        removed_items,
     } = req.body;
 
     try {
@@ -282,6 +283,12 @@ const updateLeadById = async (req, res) => {
             // delete all lead products
             await prisma.lead_products.deleteMany({
                 where: { lead_id: leadId },
+            });
+        }
+
+        if (removed_items?.length > 0) {
+            await prisma.lead_products.deleteMany({
+                where: { id: { in: removed_items } },
             });
         }
 
