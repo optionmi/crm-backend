@@ -521,6 +521,16 @@ const DailyPlanning = async (req, res) => {
     }
 };
 
+const getAllVisit = async (req, res) => {
+    try {
+        const visit = await prisma.dailyplanning.findMany({});
+        return res.status(200).json({ visit });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Server Error" });
+    }
+};
+
 module.exports = {
     createLead,
     getAllLeads,
@@ -531,4 +541,5 @@ module.exports = {
     updateLeadStage,
     addActivity,
     DailyPlanning,
+    getAllVisit,
 };
