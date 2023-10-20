@@ -12,6 +12,7 @@ const {
     addFile,
     addActivity,
     DailyPlanning,
+    getAllVisit,
 } = require("../../controllers/Salespersons/leadsController");
 const authenticateUser = require("../../middleware/auth");
 
@@ -40,5 +41,6 @@ router.post(
 );
 router.get("/:id", authenticateUser(), getLeadById);
 router.post("/:id", authenticateUser(), updateLeadById);
+router.get("/all/visit", authenticateUser(), getAllVisit);
 
 module.exports = router;
