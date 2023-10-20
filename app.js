@@ -17,7 +17,10 @@ const seriesRoutes = require("./routes/Publishers/series");
 const booksRoutes = require("./routes/Publishers/books");
 const contactsRoutes = require("./routes/Contacts/contacts");
 const usersRoutes = require("./routes/Users/users");
+const emailRoute = require("./routes/Email/email");
 const locationRoutes = require("./routes/Salespersons/location");
+const quotesRoutes = require("./routes/Quotes/quotes");
+const orgaanizationsRoute = require("./routes/Organizations/organizations");
 
 // Middleware
 app.use(express.json());
@@ -46,6 +49,10 @@ app.use("/api/books", booksRoutes);
 app.use("/api/contacts", contactsRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/location", locationRoutes);
+app.use("/api/quotes", quotesRoutes);
+app.use("/api/organizations", orgaanizationsRoute);
+// Email
+app.use("/api/emails", emailRoute);
 
 // Download Files
 app.get("/files/lead/:fileName", (req, res) => {

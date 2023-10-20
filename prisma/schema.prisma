@@ -170,6 +170,7 @@ model salespeople {
   travellingexpenses travellingexpenses[]
   leads              leads[]
   locations          Location[]
+  quotes             quotes[]
 
   @@index([publisher_id], map: "publisher_id")
 }
@@ -232,6 +233,7 @@ model users {
   lead_files                 lead_files[]
   lead_activities            lead_activities[]
   lead_activity_participants lead_activity_participants[]
+  lead_emails                lead_emails[]
 }
 
 model boards {
@@ -283,6 +285,7 @@ model books {
   subject       subjects        @relation(fields: [subject_id], references: [id])
   series        series          @relation(fields: [series_id], references: [id])
   lead_products lead_products[]
+  quote_items   quote_items[]
 
   @@index([publisher_id], map: "publisher_id")
 }
@@ -312,6 +315,8 @@ model leads {
   lead_files                 lead_files[]
   lead_activities            lead_activities[]
   lead_activity_participants lead_activity_participants[]
+  lead_emails                lead_emails[]
+  quotes                     quotes[]
 }
 
 model lead_contact_person {
@@ -342,7 +347,7 @@ model lead_products {
 model contacts {
   id                         Int                          @id @default(autoincrement())
   name                       String
-  emails                     emails[]
+  emails                     contact_emails[]
   contact_numbers            contact_numbers[]
   lead_contact_person        lead_contact_person[]
   organization               organizations?               @relation(fields: [organization_id], references: [id])
@@ -350,9 +355,10 @@ model contacts {
   createdAt                  DateTime?                    @default(now()) @db.Timestamp(0)
   updatedAt                  DateTime?                    @default(now()) @db.Timestamp(0)
   lead_activity_participants lead_activity_participants[]
+  quotes                     quotes[]
 }
 
-model emails {
+model contact_emails {
   id         Int       @id @default(autoincrement())
   contact_id Int
   email      String
@@ -375,6 +381,11 @@ model contact_numbers {
 model organizations {
   id                  Int                   @id @default(autoincrement())
   name                String
+  address             String
+  country             String
+  state               String
+  city                String
+  postal_code         Int
   createdAt           DateTime?             @default(now()) @db.Timestamp(0)
   updatedAt           DateTime?             @default(now()) @db.Timestamp(0)
   lead_contact_person lead_contact_person[]
@@ -436,15 +447,75 @@ model lead_activity_participants {
   leads       leads?          @relation(fields: [leadsId], references: [id])
 }
 
-model Location {
-  id            Int      @id @default(autoincrement())
-  latitude      Decimal  @db.Decimal(10, 6)
-  longitude     Decimal  @db.Decimal(10, 6)
-  salesperson_id Int
-  timestamp     DateTime @default(now()) @updatedAt
-  salesperson   salespeople @relation(fields: [salesperson_id], references: [id], onDelete: Cascade)
+model lead_emails {
+  id        Int         @id @default(autoincrement())
+  lead_id   Int
+  user_id   Int
+  to        String
+  subject   String
+  message   String
+  status    EmailStatus @default(UNREAD)
+  createdAt DateTime?   @default(now()) @db.Timestamp(0)
+  updatedAt DateTime?   @default(now()) @db.Timestamp(0)
+  lead      leads       @relation(fields: [lead_id], references: [id])
+  user      users       @relation(fields: [user_id], references: [id])
 }
 
+model quotes {
+  id                   Int           @id @default(autoincrement())
+  salesperson_id       Int
+  subject              String
+  description          String
+  expired_at           DateTime
+  contact_person_id    Int
+  lead_id              Int
+  billing_address      String
+  billing_country      String
+  billing_state        String
+  billing_city         String
+  billing_postal_code  Int
+  shipping_address     String
+  shipping_country     String
+  shipping_state       String
+  shipping_city        String
+  shipping_postal_code Int
+  sub_total            Decimal       @db.Decimal(10, 2)
+  total_discount       Decimal       @db.Decimal(10, 2)
+  total_tax            Decimal       @db.Decimal(10, 2)
+  adjustment           Decimal       @db.Decimal(10, 2)
+  grand_total          Decimal       @db.Decimal(10, 2)
+  createdAt            DateTime?     @default(now()) @db.Timestamp(0)
+  updatedAt            DateTime?     @default(now()) @db.Timestamp(0)
+  quote_items          quote_items[]
+  lead                 leads         @relation(fields: [lead_id], references: [id])
+  salesperson          salespeople   @relation(fields: [salesperson_id], references: [id])
+  contact              contacts      @relation(fields: [contact_person_id], references: [id])
+}
+
+model quote_items {
+  id        Int       @id @default(autoincrement())
+  quote_id  Int
+  book_id   Int
+  quantity  Int
+  price     Decimal   @db.Decimal(10, 2)
+  amount    Decimal   @db.Decimal(10, 2)
+  discount  Decimal   @db.Decimal(10, 2)
+  tax       Decimal   @db.Decimal(10, 2)
+  total     Decimal   @db.Decimal(10, 2)
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt DateTime? @default(now()) @db.Timestamp(0)
+  quote     quotes    @relation(fields: [quote_id], references: [id])
+  book      books     @relation(fields: [book_id], references: [id])
+}
+
+model Location {
+  id             Int         @id @default(autoincrement())
+  latitude       Decimal     @db.Decimal(10, 6)
+  longitude      Decimal     @db.Decimal(10, 6)
+  salesperson_id Int
+  timestamp      DateTime    @default(now()) @updatedAt
+  salesperson    salespeople @relation(fields: [salesperson_id], references: [id], onDelete: Cascade)
+}
 
 // Enums
 enum negotiation_result {
@@ -513,4 +584,10 @@ enum ActivityType {
   CALL
   MEETING
   LUNCH
+}
+
+enum EmailStatus {
+  UNREAD
+  READ
+  ARCHIVED
 }

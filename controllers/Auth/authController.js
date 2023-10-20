@@ -32,7 +32,9 @@ router.post("/login", async (req, res) => {
         }
 
         // Create and sign a JSON Web Token
-        const payload = { user: { id: user.id, user_type: user.user_type } };
+        const payload = {
+            user: { id: user.id, user_type: user.user_type, email: user.email },
+        };
         jwt.sign(
             payload,
             process.env.JWT_SECRET,

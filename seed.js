@@ -207,15 +207,30 @@ async function seedDatabase() {
                 contact_numbers: {
                     create: { number: "1234567890" },
                 },
+                organization: {
+                    create: {
+                        name: "abc org",
+                        address: "123 xyz",
+                        country: "IN",
+                        state: "DL",
+                        city: "Delhi",
+                        postal_code: 123456,
+                    },
+                },
             },
         });
 
         // Seed Organizations
-        const organization = await prisma.organizations.create({
-            data: {
-                name: "abc org",
-            },
-        });
+        // const organization = await prisma.organizations.create({
+        //     data: {
+        //         name: "abc org",
+        //         address: "123 xyz",
+        //         country: "IN",
+        //         state: "DL",
+        //         city: "Delhi",
+        //         postal_code: 123456,
+        //     },
+        // });
     } catch (error) {
         console.error("Error seeding database:", error);
         return;

@@ -137,7 +137,7 @@ const deleteSubject = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Failed to delete Subject");
+        res.status(500).send({ message: "Failed to delete Subject" });
     }
 };
 

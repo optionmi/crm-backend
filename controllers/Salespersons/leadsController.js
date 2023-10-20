@@ -176,6 +176,7 @@ const getLeadById = async (req, res) => {
                         },
                     },
                 },
+                lead_emails: { include: { user: true } },
             },
         });
 
@@ -212,6 +213,7 @@ const updateLeadById = async (req, res) => {
         lead_products,
         // contact_id,
         lead_contact_person,
+        removed_items,
     } = req.body;
 
     try {
@@ -281,6 +283,12 @@ const updateLeadById = async (req, res) => {
             // delete all lead products
             await prisma.lead_products.deleteMany({
                 where: { lead_id: leadId },
+            });
+        }
+
+        if (removed_items?.length > 0) {
+            await prisma.lead_products.deleteMany({
+                where: { id: { in: removed_items } },
             });
         }
 
@@ -403,6 +411,7 @@ const updateLeadStage = async (req, res) => {
                         },
                     },
                 },
+                lead_emails: { include: { user: true } },
             },
         });
         return res
@@ -491,6 +500,29 @@ const addActivity = async (req, res) => {
     }
 };
 
+const searchLeads = async (req, res) => {
+    try {
+        const { search } = req.query;
+
+        const leads = await prisma.leads.findMany({
+            where: {
+                client_name: {
+                    contains: search,
+                },
+            },
+        });
+
+        if (leads.length === 0) {
+            return res.status(200).json({ message: "No Leads found" });
+        }
+
+        return res.status(200).json({ leads });
+    } catch (error) {
+        console.error(error);
+        return res.sendStatus(500);
+    }
+};
+
 const DailyPlanning = async (req, res) => {
     const leadId = parseInt(req.params.id);
     if (isNaN(leadId)) {
@@ -540,6 +572,7 @@ module.exports = {
     addFile,
     updateLeadStage,
     addActivity,
+    searchLeads,
     DailyPlanning,
     getAllVisit,
 };
