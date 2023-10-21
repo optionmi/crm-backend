@@ -45,7 +45,7 @@ const getAttendance = async (req, res) => {
     try {
         // const { salespersonId } = req.params;
 
-        const id = parseInt(req.params.id);
+        const { id } = req.params;
         if (isNaN(id)) {
             res.status(400).send({ message: "Invalid ID" });
             return;
@@ -55,8 +55,16 @@ const getAttendance = async (req, res) => {
         // const user = await Salespeople.findOne({
         //     where: { id: salespersonId, team: "SalesTeam" },
         // });
-        const user = await prisma.salespeople.findUnique({
-            where: { user_id: id, team: "SalesTeam" },
+
+        const whereCondition = id
+            ? {
+                  OR: [{ user_id: parseInt(id) }, { id: parseInt(id) }],
+                  team: "SalesTeam",
+              }
+            : {};
+
+        const user = await prisma.salespeople.findFirst({
+            where: whereCondition,
         });
 
         if (user) {
