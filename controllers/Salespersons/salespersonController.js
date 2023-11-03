@@ -42,6 +42,7 @@ const createSalesperson = async (req, res) => {
         // const user = await User.create({
         const user = await prisma.users.create({
             data: {
+                name: name,
                 email: email,
                 password: hashedPassword,
                 user_type: "salesperson",
@@ -51,8 +52,6 @@ const createSalesperson = async (req, res) => {
         if (!user || !user.id) {
             return res.status(500).json({ message: "User creation failed" });
         }
-
-        console.log(creatorId);
 
         // Create the salesperson
         // const salesperson = await Salesperson.create({
