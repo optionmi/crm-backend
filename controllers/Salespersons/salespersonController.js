@@ -42,6 +42,7 @@ const createSalesperson = async (req, res) => {
         // const user = await User.create({
         const user = await prisma.users.create({
             data: {
+                name,
                 email: email,
                 password: hashedPassword,
                 user_type: "salesperson",

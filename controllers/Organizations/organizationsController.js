@@ -117,10 +117,34 @@ const updateOrganizationById = async (req, res) => {
     }
 };
 
+const searchOrganizations = async (req, res) => {
+    try {
+        const { search } = req.query;
+
+        const organizations = await prisma.organizations.findMany({
+            where: {
+                name: {
+                    contains: search,
+                },
+            },
+        });
+
+        if (organizations.length === 0) {
+            return res.status(200).json({ message: "No Organizations found" });
+        }
+
+        return res.status(200).json({ organizations });
+    } catch (error) {
+        console.error(error);
+        return res.sendStatus(500);
+    }
+};
+
 module.exports = {
     createOrganization,
     getAllOrganizations,
     deleteOrganizationById,
     getOrganizationById,
     updateOrganizationById,
+    searchOrganizations,
 };
